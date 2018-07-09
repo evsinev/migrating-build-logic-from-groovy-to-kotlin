@@ -171,25 +171,30 @@
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
+<div class="paragraph lead">
+<p>This guide will walk you through converting your Groovy-based Gradle build scripts to Kotlin.</p>
+</div>
 <div class="paragraph">
-<p>In this guide you&#8217;ll learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL, discover tradeoffs, pain points and discuss migration strategies.
-Solutions for common problems and interoperability recipes are included.</p>
+<p>Gradle&#8217;s newer Kotlin DSL provides a pleasant editing experience in supported IDEs: content-assist, refactoring, documentation, and more.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/intellij-idea-android-studio.png" alt="IntelliJ IDEA and Android Studio">
+</div>
 </div>
 </div>
 <div id="toc" class="toc">
 <div id="toctitle">Contents</div>
 <ul class="sectlevel1">
-<li><a href="#groovy_vs_kotlin_dsl_tradeoffs">Groovy vs. Kotlin DSL tradeoffs</a></li>
-<li><a href="#kotlin_dsl_limitations">Kotlin DSL Limitations</a></li>
-<li><a href="#ide-support">IDE Support</a></li>
-<li><a href="#script_file_names">Script file names</a></li>
+<li><a href="#before_you_start_migrating">Before you start migrating</a></li>
+<li><a href="#script_file_naming">Script file naming</a></li>
 <li><a href="#applying_plugins">Applying plugins</a></li>
 <li><a href="#configuring-plugins">Configuring plugins</a></li>
 <li><a href="#declarative-scripts">Keeping build scripts declarative</a></li>
 <li><a href="#configuring-tasks">Configuring tasks</a></li>
 <li><a href="#creating_tasks">Creating tasks</a></li>
 <li><a href="#configurations-and-dependencies">Configurations and dependencies</a></li>
-<li><a href="#multi_project_builds">Multi project builds</a></li>
+<li><a href="#multi_project_builds">Multi-project builds</a></li>
 <li><a href="#migration_strategies">Migration strategies</a></li>
 <li><a href="#interop">Interoperability</a></li>
 <li><a href="#summary">Summary</a></li>
@@ -198,205 +203,43 @@ Solutions for common problems and interoperability recipes are included.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="groovy_vs_kotlin_dsl_tradeoffs"><a class="anchor" href="#groovy_vs_kotlin_dsl_tradeoffs"></a><a class="link" href="#groovy_vs_kotlin_dsl_tradeoffs">Groovy vs. Kotlin DSL tradeoffs</a></h2>
+<h2 id="before_you_start_migrating"><a class="anchor" href="#before_you_start_migrating"></a><a class="link" href="#before_you_start_migrating">Before you start migrating</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle is implemented in Java on top of the JVM.
-Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.</p>
-</div>
-<div class="paragraph">
-<p>Kotlin and Groovy languages are very different, each with its own strengths.
-Kotlin is statically typed, has null safety built-in, hence is quite strict.
-Groovy on the other hand is highly dynamic by nature, hence is very flexible.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the <a href="https://kotlinlang.org/docs/reference/">reference documentation</a> is the place to go.
-The <a href="https://kotlinlang.org/docs/tutorials/koans.html">Kotlin Koans</a> provide a fun way to learn Kotlin.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The Kotlin language being more strict than Groovy also means that the Gradle Kotlin DSL is more strict than the Gradle Groovy DSL.
-Both share the same ultimate goal though: provide means to interact with the dynamic and extensible Gradle model, and runtime.</p>
-</div>
-<div class="paragraph">
-<p>It takes more ceremony to do dynamic things with the Kotlin DSL.
-On the other hand it provides more safety and more tooling.</p>
-</div>
-<div class="paragraph">
-<p>Because Kotlin is a statically-typed language with deep support in IntelliJ IDEA, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.</p>
-</div>
-<div class="paragraph">
-<p>At a glance, the Gradle Kotlin DSL doesn’t look too different from the Gradle build scripts you know today:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
-    application
-}
-
-application {
-    mainClassName = "com.example.Main"
-}
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    testImplementation("junit:junit:4.12")
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>But things get very interesting when you begin to explore what’s possible in the IDE.
-You’ll find that, suddenly, the things you usually expect from your IDE just work, including:</p>
+<p><strong>Please read:</strong> It&#8217;s helpful to understand the following important information <em>before you migrate</em>:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>auto-completion and content assist</p>
+<p>Some IDEs, such as Eclipse or NetBeans, do not yet provide helpful tools for editing Gradle Kotlin DSL files, however, importing and working with Kotlin DSL-based builds work as usual.</p>
 </li>
 <li>
-<p>quick documentation</p>
+<p>In IntelliJ, you must <a href="https://www.jetbrains.com/help/idea/gradle.html#gradle_import">import your project from the Gradle model</a> to get content-assist and refactoring tools for Kotlin DSL scripts.</p>
 </li>
 <li>
-<p>navigation to source</p>
+<p>You must run Gradle with Java 8 or higher. Java 7 is not supported.</p>
 </li>
 <li>
-<p>refactoring and more</p>
+<p>Knowledge of Kotlin syntax and basic language features is very helpful. The <a href="https://kotlinlang.org/docs/reference/">Kotlin reference documentation</a> and <a href="https://kotlinlang.org/docs/tutorials/koans.html">Kotlin Koans</a> should be useful to you.</p>
+</li>
+<li>
+<p>Use of the <code>plugins {}</code> block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them Kotlin.</p>
+</li>
+<li>
+<p>The Kotlin DSL will not support <code>model {}</code> elements. This is part of the <a href="https://blog.gradle.org/state-and-future-of-the-gradle-software-model">discontinued Gradle Software Model</a>.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The effect is dramatic, and we think it’ll make a big difference for Gradle users.</p>
+<p>If you run to trouble or a suspected bug, please take advantage of the <code>gradle/kotlin-dsl</code> <a href="https://github.com/gradle/kotlin-dsl/issues/">issue tracker</a>.</p>
 </div>
 <div class="paragraph">
-<p>Applying Gradle best practices tend towards more declarative builds, less dynamic constructs.
-This is where the Kotlin DSL shines with the less ceremony and the more tooling.
-In that sense, the Kotlin DSL encourages Gradle best practices.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>Applying Gradle best practices will make it much easier with the Kotlin DSL</strong></p>
-</div>
-<div class="paragraph">
-<p>Your first move should be to <a href="https://docs.gradle.org/4.8/userguide/gradle_wrapper.html#sec:upgrading_wrapper">upgrade to the latest stable Gradle release</a>.</p>
-</div>
-<div class="paragraph">
-<p>Please refer to the <a href="https://docs.gradle.org/4.8/userguide/authoring_maintainable_build_scripts.html">Authoring Maintainable Build Scripts</a> and <a href="https://docs.gradle.org/4.8/userguide/organizing_gradle_projects.html">Organizing Build Logic</a> user manual chapters.
-In general, follow the advice given in the Gradle <a href="https://docs.gradle.org/4.8/userguide/userguide.html">user manual</a> and <a href="https://guides.gradle.org">guides</a>.</p>
-</div>
-</td>
-</tr>
-</table>
+<p><em>You don&#8217;t have to migrate all at once!</em> Both Groovy and Kotlin-based build scripts can <code>apply</code> other scripts of either language. You can find inspiration for any Gradle features not covered in the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples">Kotlin DSL samples</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="kotlin_dsl_limitations"><a class="anchor" href="#kotlin_dsl_limitations"></a><a class="link" href="#kotlin_dsl_limitations">Kotlin DSL Limitations</a></h2>
-<div class="sectionbody">
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Supported Platforms</dt>
-<dd>
-<p>A Java Development Kit (JDK), version 1.8 or better is required to run Gradle when using the Kotlin DSL.
-The embedded Kotlin compiler is known to work on Linux, macos, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.</p>
-</dd>
-<dt class="hdlist1">Performance</dt>
-<dd>
-<p>In "everything is up-to-date" scenarios, the Groovy DSL and Kotlin DSL performance characteristics are similar.
-However, the embedded Kotlin compiler being slower than the Groovy compiler, the "first use" use case is slower with the Kotlin DSL than with the Groovy DSL.
-The same applies to the "buildSrc change" use case which invalidates the caching of all build scripts.
-See <a href="https://github.com/gradle/kotlin-dsl/issues/902">gradle/kotlin-dsl#902</a> for more information and some numbers.</p>
-</dd>
-<dt class="hdlist1">Static DSL</dt>
-<dd>
-<p>The Gradle configuration model is dynamic.
-The Kotlin DSL provides a static view over this dynamic model.
-But not all use cases are supported.
-See the <a href="#configuring-plugins">Configuring plugins</a> and <a href="#configurations-and-dependencies">Configurations and dependencies</a> sections below for supported use cases and how to dynamically access the Gradle model.</p>
-</dd>
-<dt class="hdlist1">IDE support</dt>
-<dd>
-<p>IntelliJ IDEA and Android Studio both support editing Gradle Kotlin DSL scripts.
-Other IDEs might display such scripts as plain text or simply syntax highlighted.
-See the <a href="#ide-support">IDE Support</a> section below for more information.</p>
-</dd>
-<dt class="hdlist1">Software model</dt>
-<dd>
-<p>The DSL of the <a href="https://blog.gradle.org/state-and-future-of-the-gradle-software-model">discontinued Gradle Software Model</a> is not supported in Gradle Kotlin DSL scripts.
-However, declaring and using a <code>RuleSource</code> is supported, see the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/model-rules">model-rules</a> sample that demonstrates how to write rules in Kotlin and how to use them from a Gradle Kotlin DSL script.</p>
-</dd>
-<dt class="hdlist1">Open issues</dt>
-<dd>
-<p>Please refer to the <code>gradle/kotlin-dsl</code> <a href="https://github.com/gradle/kotlin-dsl/issues/">issue tracker</a> when facing an issue.</p>
-</dd>
-</dl>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="ide-support"><a class="anchor" href="#ide-support"></a><a class="link" href="#ide-support">IDE Support</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>IntelliJ IDEA and Android Studio both support the edition of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/intellij-idea-android-studio.png" alt="IntelliJ IDEA and Android Studio">
-</div>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Note that when using IDEA files generated by the Gradle <code>idea</code> plugin, the IDE will not provide auto-completion nor refactoring nor everything in-between.
-You must <a href="https://www.jetbrains.com/help/idea/gradle.html#gradle_import">import the project from the Gradle model</a> instead.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Even though other IDEs have no support for code completion and content assist when editing Kotlin DSL scripts, importing and working with a Gradle build using the Kotlin DSL works as usual.
-This is true for both <a href="https://www.eclipse.org/">Eclipse</a>, thanks to the <a href="https://projects.eclipse.org/projects/tools.buildship">Buildship</a> project, and <a href="https://netbeans.apache.org/">Apache Netbeans</a>, thanks to its <a href="https://github.com/kelemen/netbeans-gradle-project">Gradle plugin</a>.
-Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL at this time unless your build authoring team is using IntelliJ IDEA or Android Studio.</p>
-</div>
-<div class="paragraph">
-<p>If you encounter any IDE related issue, please report them to the corresponding issue tracker:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>IntelliJ IDEA issues go to <a href="https://youtrack.jetbrains.com/">JetBrains Youtrack issue tracker</a>,</p>
-</li>
-<li>
-<p>Android Studio issues go to <a href="https://source.android.com/setup/contribute/report-bugs">Google Android issue tracker</a>.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="script_file_names"><a class="anchor" href="#script_file_names"></a><a class="link" href="#script_file_names">Script file names</a></h2>
+<h2 id="script_file_naming"><a class="anchor" href="#script_file_naming"></a><a class="link" href="#script_file_naming">Script file naming</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -406,10 +249,10 @@ Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL at 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Groovy DSL script files use the <code>*.gradle</code> file name extension.</p>
+<p>Groovy DSL script files use the <code>.gradle</code> file name extension.</p>
 </div>
 <div class="paragraph">
-<p>Kotlin DSL script files use the <code>*.gradle.kts</code> file name extension.</p>
+<p>Kotlin DSL script files use the <code>.gradle.kts</code> file name extension.</p>
 </div>
 </td>
 </tr>
@@ -422,19 +265,18 @@ Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL at 
 <p>The <a href="https://docs.gradle.org/4.8/userguide/build_lifecycle.html#sec:settings_file">settings file</a>, <code>settings.gradle</code>, can also be renamed <code>settings.gradle.kts</code>.</p>
 </div>
 <div class="paragraph">
-<p>In a multi-project build, you can have some modules using the Groovy DSL (and thus use <code>build.gradle</code> files), and some other modules using the Kotlin DSL (and thus use <code>build.gradle.kts</code> files).
-You&#8217;re not forced to migrate everything at once.</p>
+<p>In a multi-project build, you can have some modules using the Groovy DSL (with <code>build.gradle</code>) and others using the Kotlin DSL (with <code>build.gradle.kts</code>).</p>
 </div>
 <div class="paragraph">
-<p>On top of that, the following conventions apply for better IDE support:</p>
+<p>On top of that, apply the following conventions for better IDE support:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>scripts applied to <code>Settings</code> should be named <code>*.settings.gradle.kts</code>,</p>
+<p>Name scripts that are applied to <code>Settings</code> according to the pattern <code>*.settings.gradle.kts</code>,</p>
 </li>
 <li>
-<p><a href="https://docs.gradle.org/4.8/userguide/init_scripts.html">init scripts</a> should be named <code>*.init.gradle.kts</code>.</p>
+<p>Name <a href="https://docs.gradle.org/4.8/userguide/init_scripts.html">init scripts</a> according to the pattern <code>*.init.gradle.kts</code>.</p>
 </li>
 </ul>
 </div>
@@ -457,7 +299,7 @@ You&#8217;re not forced to migrate everything at once.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Using the declarative <code>plugins {}</code> block:</p>
+<p>Here&#8217;s an example using the declarative <code>plugins {}</code> block:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -484,19 +326,19 @@ You&#8217;re not forced to migrate everything at once.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can switch from Groovy script excerpts to Kotlin ones to see their differences by clicking the tabs on top of them.
+You can switch between the Groovy and Kotlin versions of the script by clicking the tabs at the top of the sample.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>As you can see with the <code>jacoco</code> example, the same syntax can be used in Groovy and Kotlin (except for double quotes and parentheses that must be used in Kotlin).</p>
+<p>As you can see with the <code>jacoco</code> example, the same syntax can be used in Groovy and Kotlin, except for the double quotes and parentheses that must be used in Kotlin.</p>
 </div>
 <div class="paragraph">
-<p>The Kotlin DSL also defines Kotlin property extensions for all core Gradle plugins, so you can use them, as shown above with the <code>java</code> example.</p>
+<p>The Kotlin DSL also defines Kotlin property extensions that you can use for all core Gradle plugins, as shown above with the <code>java</code> plugin declaration.</p>
 </div>
 <div class="paragraph">
-<p>You can also use the imperative <code>apply</code> syntax, but then non core plugins must be added to the classpath of the build script:</p>
+<p>You can also use the imperative <code>apply</code> syntax, but then non-core plugins must be included on the classpath of the build script:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -538,10 +380,10 @@ apply(plugin = "org.springframework.boot")</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>It is strongly recommended to apply plugins using the <code>plugins {}</code> block.</strong></p>
+<p><strong>We strongly recommend that you use the <code>plugins {}</code> block in preference to the <code>apply()</code> function.</strong></p>
 </div>
 <div class="paragraph">
-<p>The declarative nature of the <code>plugins {}</code> block enables the Kotlin DSL to provide type safe accessors to what the applied plugins contribute (extensions, configurations etc&#8230;&#8203;), making plugins models discoverable from the IDE and easy to configure.</p>
+<p>The declarative nature of the <code>plugins {}</code> block enables the Kotlin DSL to provide type-safe accessors to the extensions, configurations and other features contributed by the applied plugins, which makes it easy for IDEs to discover the details of the plugins' models and makes them easy to configure.</p>
 </div>
 </td>
 </tr>
@@ -553,7 +395,8 @@ apply(plugin = "org.springframework.boot")</code></pre>
 <h2 id="configuring-plugins"><a class="anchor" href="#configuring-plugins"></a><a class="link" href="#configuring-plugins">Configuring plugins</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Many plugins come with extensions to configure them. If those plugins are applied using the declarative <code>plugins {}</code> block (which is true for the <code>jacoco</code> plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy:</p>
+<p>Many plugins come with extensions to configure them. If those plugins are applied using the declarative <code>plugins {}</code> block, then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
+The following sample shows how this works for the Jacoco Plugin.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -578,7 +421,8 @@ jacoco {
 </div>
 </div>
 <div class="paragraph">
-<p>On the other hand, if you use the imperative <code>apply</code> function to apply a plugin (which is true for the checkstyle plugin in the following example), you&#8217;ll have to use the <code>configure&lt;T&gt; {}</code> function to configure them:</p>
+<p>By contrast, if you use the imperative <code>apply()</code> function to apply a plugin, then you will have to use the <code>configure&lt;T&gt;()</code> function to configure that plugin.
+The following sample shows how this works for the Checkstyle Plugin by explicitly declaring the plugin&#8217;s extension class — <code>CheckstyleExtension</code> — in the <code>configure&lt;T&gt;()</code> function:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -599,7 +443,7 @@ configure&lt;CheckstyleExtension&gt; {
 </div>
 </div>
 <div class="paragraph">
-<p>Again, it is strongly recommended to apply plugins declaratively using the <code>plugins {}</code> block.</p>
+<p>Again, we strongly recommend that you apply plugins declaratively via the <code>plugins {}</code> block.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -608,30 +452,26 @@ configure&lt;CheckstyleExtension&gt; {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
+<div class="title">Knowing what plugin-provided extensions are available</div>
 <div class="paragraph">
-<p><strong>What extensions are available?</strong></p>
+<p>Because your IDE knows about the configuration elements that a plugin provides, it will include those elements when you ask your IDE for suggestions.
+This will happen both at the top level of your build scripts — most plugin extensions are added to the <code>Project</code> object — and within an extension&#8217;s configuration block.</p>
 </div>
 <div class="paragraph">
-<p>You can ask your IDE for suggestions on the extended object.
-Most plugin extensions are added to the <code>Project</code> object.
-Simply ask your IDE for suggestions at the top level of your build scripts.</p>
-</div>
-<div class="paragraph">
-<p>You can also use the <code>:kotlinDslAccessorsReport</code> task.
-It prints the Kotlin code for accessing the extensions contributed by applied plugins and provides the name and type of all of them.</p>
+<p>You can also run the <code>:kotlinDslAccessorsReport</code> task to learn about the extension contributed by all applied plugins.
+It prints the Kotlin code you can use to access those extensions and provides the name and type of the accessor methods.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If the plugin you want to configure was written in Groovy and relies on <code>groovy.lang.Closure</code> or other dynamic Groovy semantics, a bit more gymnastic may be required.
-See the <a href="#interop">Interoperability</a> section for more information on how to call Groovy code from Kotlin code or keep that plugin&#8217;s configuration in a Groovy script.</p>
+<p>If the plugin you want to configure relies on <code>groovy.lang.Closure</code> in its method signatures or uses other dynamic Groovy semantics, more work will be required to configure that plugin from a Kotlin DSL build script.
+See the <a href="#interop">Interoperability</a> section for more information on how to call Groovy code from Kotlin code or to keep that plugin&#8217;s configuration in a Groovy script.</p>
 </div>
 <div class="paragraph">
 <p>Plugins also contribute tasks that you may want to configure directly.
-This is covered in the following <a href="#configuring-tasks">Configuring tasks</a> section.
-But first, let&#8217;s have a look at how one can keep using the declarative <code>plugins {}</code> block always.</p>
+This topic is covered in the <a href="#configuring-tasks">Configuring tasks</a> section.</p>
 </div>
 </div>
 </div>
@@ -639,64 +479,45 @@ But first, let&#8217;s have a look at how one can keep using the declarative <co
 <h2 id="declarative-scripts"><a class="anchor" href="#declarative-scripts"></a><a class="link" href="#declarative-scripts">Keeping build scripts declarative</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Plugins fetched from another source than the <a href="https://plugins.gradle.org/">Gradle Plugin Portal</a> may or may not be usable with the <code>plugins {}</code> block depending on how they have been published.
-If you&#8217;re publishing plugins, please use the Gradle built-in <a href="https://docs.gradle.org/4.8/userguide/java_gradle_plugin.html"><code>java-gradle-plugin</code></a> plugin that automates publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.</p>
+<p>Plugins fetched from a source other than the <a href="https://plugins.gradle.org/">Gradle Plugin Portal</a> may or may not be usable with the <code>plugins {}</code> block.
+It depending on how they have been published.</p>
 </div>
 <div class="paragraph">
-<p>For example, the Android Gradle Plugin plugins are not published to the Gradle Plugin Portal and the metadata required to resolve plugin identifiers to resolvable artifacts <a href="https://issuetracker.google.com/issues/64551265">is not published</a> to the Google repository.</p>
+<p>For example, the Android Plugin for Gradle is not published to the Gradle Plugin Portal and at least up to version 3.1.0 of the plugin, the metadata required to resolve the artifacts for a given plugin identifier  is not published to the Google repository.</p>
 </div>
 <div class="paragraph">
-<p>By default, the <code>com.android.application</code> plugin must be applied using the imperative <code>apply(..)</code> functions.
-This means that the Kotlin DSL can&#8217;t provide type safe Kotlin extensions to configure it:</p>
+<p>Because of this, projects typically apply the plugin via a <code>buildscript {}</code> block and the <code>apply()</code> function.
+However, you <em>can</em> use the <code>plugins {}</code> block if you configure your project appropriately.
+We will show you in this section how to do that for the Android Plugin for Gradle.</p>
 </div>
-<div class="listingblock">
-<div class="title">build.gradle.kts</div>
-<div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">import com.android.build.gradle.AppExtension
-
-buildscript {                               <i class="conum" data-value="1"></i><b>(1)</b>
-    repositories {
-        google()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.1.0")
-    }
-}
-
-apply(plugin = "com.android.application")   <i class="conum" data-value="2"></i><b>(2)</b>
-
-configure&lt;AppExtension&gt; {                   <i class="conum" data-value="3"></i><b>(3)</b>
-    buildToolsVersion("27.0.3")
-    compileSdkVersion(27)
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
+<div class="admonitionblock note">
 <table>
 <tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Bring the Android Gradle Plugin into the build script dependencies</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Imperatively apply the <code>com.android.application</code> plugin</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Use the <code>configure&lt;T&gt; {}</code> API to configure the <code>android</code> extension of type <code>com.android.build.gradle.AppExtension</code></td>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When publishing plugins, please use Gradle&#8217;s built-in <a href="https://docs.gradle.org/4.8/userguide/java_gradle_plugin.html">Java Gradle Plugin</a> Plugin. It automates the publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.
+</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The following snippets will use the Android Gradle Plugin to demonstrate how to enable the use of the <code>plugins {}</code> block anyway in order to benefit from the Kotlin DSL type safe Kotlin extensions.</p>
+<p>The goal is to instruct your build on how to map the <code>com.android.application</code> plugin identifier to a resolvable artifact.
+This is done in two steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add a plugin repository to the build&#8217;s settings file</p>
+</li>
+<li>
+<p>Map the plugin ID to the corresponding artifact coordinates</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The goal here is to instruct your build how to map the <code>com.android.application</code> plugin identifier to a resolvable artifact.
-This is done in two steps.</p>
-</div>
-<div class="paragraph">
-<p>First add a plugin repository in your settings file for the whole build:</p>
+<p>The following example shows you how to add a plugin repository to the build via a <code>pluginManagement {}</code> block in the settings file:</p>
 </div>
 <div class="listingblock">
 <div class="title">settings.gradle.kts</div>
@@ -710,7 +531,8 @@ This is done in two steps.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Then, map the plugin <code>id</code> to the corresponding artifact coordinates, still in your settings file:</p>
+<p>Providing the ID-to-artifact mapping is also done in the settings file, again within the <code>pluginManagement {}</code> block.
+The following sample maps the <code>com.android.application</code> ID to the <code>com.android.tools.build:gradle:&lt;version&gt;</code> artifact coordinate:</p>
 </div>
 <div class="listingblock">
 <div class="title">settings.gradle.kts</div>
@@ -728,7 +550,7 @@ This is done in two steps.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>You can now apply the <code>com.android.application</code> plugin using the <code>plugins {}</code> block and benefit from the type-safe plugin extension accessors, in your build files:</p>
+<p>Once you have completed both steps, you can apply the plugin using the <code>plugins {}</code> block and benefit from the type-safe plugin extension accessors in your build files:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -756,15 +578,11 @@ android {                                           <i class="conum" data-value=
 </table>
 </div>
 <div class="paragraph">
-<p>See the <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle documentation for more information.</p>
+<p>See the <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle user manual for more information.</p>
 </div>
 <div class="paragraph">
-<p>The same can be applied to resolving plugins from composite builds.
-Composite builds <a href="https://github.com/gradle/gradle/issues/2528">do not expose plugin markers</a> yet.
-This can be worked around by mapping the plugin <code>id</code> to the corresponding artifact coordinates using a plugin resolution strategy, just like above.</p>
-</div>
-<div class="paragraph">
-<p>If you can&#8217;t use the <code>plugins {}</code> block, you need to apply the plugin imperatively (using the <code>buildscript</code> block and <code>apply&lt;PluginType&gt;()</code> or <code>apply(plugin = "id")</code>) and to know the type of the extension(s) you want to configure as described previously.</p>
+<p>The same approach can be used to resolve plugins from composite builds, which <a href="https://github.com/gradle/gradle/issues/2528">do not expose plugin markers</a> yet.
+Simply map the plugin ID to the corresponding artifact coordinates as shown in the Android samples above.</p>
 </div>
 </div>
 </div>
@@ -772,11 +590,11 @@ This can be worked around by mapping the plugin <code>id</code> to the correspon
 <h2 id="configuring-tasks"><a class="anchor" href="#configuring-tasks"></a><a class="link" href="#configuring-tasks">Configuring tasks</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is where Groovy and Kotlin start to differ.
-Since Kotlin is a statically typed language, and since you want to benefit from this static typing by discovering available properties and methods using auto-completion, you need to know and provide the type of the task you want to configure.</p>
+<p>The syntax for configuring tasks is where the Groovy and Kotlin DSLs start to differ significantly.
+Since Kotlin is a statically typed language, you need to know and provide the type of the task if you want to access any of its type-specific properties and methods.</p>
 </div>
 <div class="paragraph">
-<p>Here is how you can configure a single property of the existing <code>jar</code> task:</p>
+<p>You also can&#8217;t access the task directly as a property of the build script as you can in a Groovy build script. Instead, you use the <code>getByName&lt;T&gt;()</code> method on the <code>tasks</code> collection, as demonstrated in the following sample:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -795,13 +613,13 @@ Since Kotlin is a statically typed language, and since you want to benefit from 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that specifying the type of the task explicitly is necessary. Otherwise, the script won&#8217;t compile because the inferred type of <code>jar</code> will be <code>Task</code>, and the <code>archiveName</code> property is specific to the <code>Jar</code> task type.
+Note that it&#8217;s necessary to specify the type of the task explicitly. Otherwise, the script won&#8217;t compile because the inferred type of <code>jar</code> will be <code>Task</code>, not <code>Jar</code>, and the <code>archiveName</code> property is specific to the <code>Jar</code> task type.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You can, however, omit the type if you only need to configure properties or call methods declared in <code>Task</code>:</p>
+<p>You can, however, omit the type if you only need to configure properties or call methods that are common to all tasks, i.e. they are declared on the <code>Task</code> interface:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -818,7 +636,7 @@ Note that specifying the type of the task explicitly is necessary. Otherwise, th
 </div>
 </div>
 <div class="paragraph">
-<p>If you need to configure several properties or call multiple methods on the same task you can group them in a block as follows:</p>
+<p>If you need to configure several properties or call multiple methods on the same task, you can group them in a block as follows:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -841,8 +659,9 @@ Note that specifying the type of the task explicitly is necessary. Otherwise, th
 </div>
 </div>
 <div class="paragraph">
-<p>But there is another idiomatic way to configure tasks: using Kotlin <a href="https://kotlinlang.org/docs/reference/delegated-properties.html">delegated properties</a>.
-It is particularly useful if you need a reference to the task for later usage:</p>
+<p>An alternative and more idiomatic way to configure tasks compared to <code>tasks.getByName&lt;T&gt;()</code> is through the use of Kotlin&#8217;s <a href="https://kotlinlang.org/docs/reference/delegated-properties.html">delegated properties</a>.
+This approach is particularly useful if you want to reference the task at a later stage in the build script.
+The following sample initially configures the <code>jar</code> task&#8217;s <code>archiveName</code> property and then later adds an <code>into()</code> declaration via the new delegated property <code>jar</code>:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -867,10 +686,10 @@ jar.into("META-INF") {
 </div>
 </div>
 <div class="paragraph">
-<p>Once again, note that if you need to apply task-specific configurations, you need to provide the type of the task (<code>Jar</code> in this example).</p>
+<p>Note that even with this approach, you need to provide the type of the task when applying type-specific configuration.</p>
 </div>
 <div class="paragraph">
-<p>Once you know the type of the task you want to configure, the IDE will assist you in configuring it with suggestions and by providing the task source if need be.</p>
+<p>Once the task type is declared, the IDE can assist you in configuring the task with suggestions and by providing access to the task&#8217;s source.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -879,11 +698,10 @@ jar.into("META-INF") {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
+<div class="title">Knowing the type of a task</div>
 <div class="paragraph">
-<p><strong>What is the type of that task?</strong></p>
-</div>
-<div class="paragraph">
-<p>In order to determine the type you need to use to configure a task you can use the built-in <code>help</code> task, it displays the type of a task:</p>
+<p>If you don&#8217;t know what type a task has, then you can find that information out via the built-in <code>help</code> task.
+Simply pass it the name of the task you&#8217;re interested in using the <code>--task</code> option, like so:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -898,7 +716,8 @@ Type
 </table>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s say we want to configure the <code>bootJar</code> and <code>bootRun</code> tasks of a Spring Boot project:</p>
+<p>Let&#8217;s bring all this together by running through a quick worked example that configures the <code>bootJar</code> and <code>bootRun</code> tasks of a Spring Boot project.
+We first determine the types of those tasks via the <code>help</code> task:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -917,7 +736,9 @@ Type
 </div>
 </div>
 <div class="paragraph">
-<p>We now know the type of the two tasks, the simple names (<code>BootJar</code> and <code>BootRun</code>) are enough, the IDE will assist you adding the required imports:</p>
+<p>Now that we know the types of the two tasks, we can import the relevant types — <code>BootJar</code> and <code>BootRun</code> — and configure the tasks as required.
+Note that the IDE can assist us with the required imports, so we only need the simple names, i.e. without the full packages.
+Here&#8217;s the resulting build script, complete with imports:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -966,7 +787,7 @@ tasks {
 <h2 id="creating_tasks"><a class="anchor" href="#creating_tasks"></a><a class="link" href="#creating_tasks">Creating tasks</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Creating tasks can be done on the <code>tasks</code> container:</p>
+<p>Creating tasks can be done on the <code>tasks</code> container, using the <code>create()</code> method shown here:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -983,7 +804,7 @@ tasks {
 </div>
 </div>
 <div class="paragraph">
-<p>or by using Kotlin delegated properties that are useful if you need a reference to the created task for later usage:</p>
+<p>or by using Kotlin delegated properties for when you need a reference to the created task for later:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1000,7 +821,9 @@ tasks {
 </div>
 </div>
 <div class="paragraph">
-<p>Often you want to create a task of a given type (<code>Zip</code> in this example):</p>
+<p>The samples above create untyped, ad-hoc tasks, but you will more commonly want to create tasks of a specific type.
+This can also be done using the same <code>create()</code> and <code>creating()</code> methods.
+Here&#8217;s an example that creates a new task of type <code>Zip</code>:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1019,7 +842,7 @@ tasks {
 </div>
 </div>
 <div class="paragraph">
-<p>The same can be done using Kotlin delegated properties:</p>
+<p>Here&#8217;s the same task created using a delegated property:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1043,7 +866,7 @@ tasks {
 <h2 id="configurations-and-dependencies"><a class="anchor" href="#configurations-and-dependencies"></a><a class="link" href="#configurations-and-dependencies">Configurations and dependencies</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Declaring dependencies in the existing configurations is not much different from doing it in Groovy:</p>
+<p>Declaring dependencies in existing configurations is similar to the way it&#8217;s done in Groovy build scripts, as you can see in this example:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1076,7 +899,7 @@ dependencies {
 </div>
 </div>
 <div class="paragraph">
-<p>Each configuration contributed by applied plugins is also available as a member of the <code>configurations</code> container so you can reference it.</p>
+<p>Each configuration contributed by an applied plugin is also available as a member of the <code>configurations</code> container, so you can reference it just like any other configuration.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1085,22 +908,19 @@ dependencies {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
+<div class="title">Knowing what configurations are available</div>
 <div class="paragraph">
-<p><strong>What configurations are available?</strong></p>
+<p>The easiest way to find out what configurations are available is by asking your IDE for suggestions within the <code>configurations</code> container.</p>
 </div>
 <div class="paragraph">
-<p>You can ask your IDE for suggestions on the <code>configurations</code> container.</p>
-</div>
-<div class="paragraph">
-<p>You can also use the <code>:kotlinDslAccessorsReport</code> task.
-It prints the Kotlin code for accessing the configurations contributed by applied plugins and provides the name of all of them.</p>
+<p>You can also use the <code>:kotlinDslAccessorsReport</code> task, which prints the Kotlin code for accessing the configurations contributed by applied plugins and provides the names for all of those accessors.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Note that if you do not use the <code>plugins {}</code> block to apply your plugins, then Kotlin extensions to reference the configurations contributed by the applied plugins won&#8217;t be available. You&#8217;ll then have to address them by name:</p>
+<p>Note that if you do not use the <code>plugins {}</code> block to apply your plugins, then you won&#8217;t be able to configure the dependency configurations provided by those plugins in the usual way. Instead, you will have to use string literals for the configuration names, which means you won&#8217;t get IDE support:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1129,7 +949,7 @@ dependencies {
 </div>
 </div>
 <div class="paragraph">
-<p>or bring them into scope thanks to Kotlin delegated properties:</p>
+<p>or you can bring the configurations into scope thanks to Kotlin&#8217;s delegated properties:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1161,10 +981,24 @@ dependencies {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>This is just one more reason to use the <code>plugins {}</code> block whenever you can!</p>
+</div>
 <div class="sect2">
 <h3 id="custom_configurations_and_dependencies"><a class="anchor" href="#custom_configurations_and_dependencies"></a><a class="link" href="#custom_configurations_and_dependencies">Custom configurations and dependencies</a></h3>
 <div class="paragraph">
-<p>Sometimes you need to add your own configuration, and add dependencies to them:</p>
+<p>Sometimes you need to create your own configurations and attach dependencies to them.
+The following example declares two new configurations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>db</code>, to which we add a PostgreSQL dependency</p>
+</li>
+<li>
+<p><code>integTestImplementation</code>, which is configured to extend the <code>testImplementation</code> configuration and to which we add a different dependency</p>
+</li>
+</ul>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1195,7 +1029,9 @@ dependencies {
 </div>
 </div>
 <div class="paragraph">
-<p>Note that, in the above example, you can only use <code>db(&#8230;&#8203;)</code> and <code>integTestImplementation(&#8230;&#8203;)</code> because they&#8217;re both declared as properties before. If they were defined elsewhere, you could get them by delegating to <code>configurations</code>, or you could use a string to add a dependency to the configuration:</p>
+<p>Note that we can only use the <code>db(&#8230;&#8203;)</code> and <code>integTestImplementation(&#8230;&#8203;)</code> notation within the <code>dependencies {}</code> block in the above example because both configurations are declared as delegated properties beforehand via the <code>creating()</code> method.
+If the configurations were defined elsewhere, you could only reference them either by first creating delegating properties via <code>configurations</code>  — as opposed to <code>configurations.creating()</code> — or by using string literals within the <code>dependencies {}</code> block.
+The following example demonstrates both approaches:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -1214,14 +1050,14 @@ dependencies {
 </div>
 </div>
 <div class="sect1">
-<h2 id="multi_project_builds"><a class="anchor" href="#multi_project_builds"></a><a class="link" href="#multi_project_builds">Multi project builds</a></h2>
+<h2 id="multi_project_builds"><a class="anchor" href="#multi_project_builds"></a><a class="link" href="#multi_project_builds">Multi-project builds</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A multi-project build model and configuration are the same whether you use Groovy scripts, Kotlin scripts or a mix of the two:</p>
+<p>The <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html">model for multi-project builds</a> is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
+Multi-project builds can even have a mix of the two.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s look at an example.
-The following is a settings script declaring some sub projects:</p>
+<p>As you can see from the following settings file and build script, the Kotlin syntax is very similar to the Groovy one:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle</div>
@@ -1235,9 +1071,7 @@ The following is a settings script declaring some sub projects:</p>
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("core", "cli")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>and the corresponding root project build script configuring sub projects:</p>
-</div>
+<hr>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
@@ -1259,18 +1093,6 @@ project(":cli") {
     apply(plugin = "application")
 }</code></pre>
 </div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Please refer to the <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html">Authoring Multi-Project Builds</a> user manual chapter for more information.
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
 <p>However there are some subtleties that can make your life easier or complicate things with the Kotlin DSL.</p>
@@ -1306,16 +1128,14 @@ In other words, project build scripts are evaluated top to bottom according to t
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
+<div class="title">Configuration on demand</div>
 <div class="paragraph">
-<p><strong>Configuration on demand</strong></p>
-</div>
-<div class="paragraph">
-<p>Enabling the incubating <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard to diagnose problems.
+<p>Enabling the incubating <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard-to-diagnose problems.
 The strictness of the Gradle Kotlin DSL makes it even more likely that problems will arise.
-In order to save you some trouble you should disable it if you have it enabled.</p>
+In order to save you trouble, you should disable it if it&#8217;s already enabled.</p>
 </div>
 <div class="paragraph">
-<p>The same is true with <code>evaluationDependsOn(projectPath)</code> and <code>evaluationDependsOnChildren()</code>.
+<p>The same is true for <code>evaluationDependsOn(projectPath)</code> and <code>evaluationDependsOnChildren()</code>.
 Favor <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#sec:decoupled_projects">decoupling your projects</a> instead.</p>
 </div>
 </td>
@@ -1328,33 +1148,54 @@ Favor <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#s
 <h2 id="migration_strategies"><a class="anchor" href="#migration_strategies"></a><a class="link" href="#migration_strategies">Migration strategies</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>As we&#8217;ve seen above, both scripts using the Kotlin DSL, <code>*.gradle.kts</code>, and scripts using the Groovy DSL, <code>*.gradle</code>, can participate in the same build.
-Gradle plugins implemented in <code>./buildSrc</code>, an included build or externally fetched can use any JVM language.
-This makes it possible to migrate progressively, piece by piece, without blocking your team.</p>
+<p>As we&#8217;ve seen above, both scripts using the Kotlin DSL and those using the Groovy DSL can participate in the same build.
+In addition, Gradle plugins from the <em>buildSrc</em> directory, an included build or an external location can be implemented using any JVM language.
+This makes it possible to migrate a build progressively, piece by piece, without blocking your team.</p>
 </div>
 <div class="paragraph">
-<p>At first sight, two approaches come to mind: mechanically migrating your build logic, translating to Kotlin piece by piece, as it is ; or, restructuring your build logic towards Gradle best practices while migrating.</p>
+<p>Two approaches to migrations stand out:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Migrating the existing syntax of your build to Kotlin, bit by bit, while retaining the structure — what we call a <em>mechanical migration</em></p>
+</li>
+<li>
+<p>Restructuring your build logic towards Gradle best practices and switching to Kotlin DSL as part of that effort</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Both approaches are possible.
+<p>Both approaches are viable.
 A mechanical migration will be enough for simple builds.
-A complex and highly dynamic build logic may require some restructuring.
-A balance between the two approaches often is the right choice.
-Of course, applying Gradle best practices will make your builds easier to use and faster and should be favored.</p>
+A complex and highly dynamic build may require some restructuring anyway, so in such cases reimplementing build logic to follow Gradle best practice makes sense.</p>
 </div>
 <div class="paragraph">
-<p>In any case, the more parts of your build logic rely on Groovy dynamism, the harder they will be to use from the Kotlin DSL.
-May it be local scripts, local plugins or external plugins relying too much on Groovy dynamism, you&#8217;ll find recipes on how to cross the dynamic boundaries from static Kotlin in the <a href="#interop">Interoperability</a> section below.</p>
+<p>Since applying Gradle best practices will make your builds easier to use and faster, we recommend that you migrate all projects in that way eventually, but it makes sense to focus on the projects that have to be restructured first and those that would benefit most from the improvements.</p>
 </div>
 <div class="paragraph">
-<p>There are two key best practices that makes it easier with the static nature of the Kotlin DSL: applying plugins with the <code>plugins {}</code> DSL and putting local build logic in <code>buildSrc</code>.</p>
+<p>Also consider that the more parts of your build logic that rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
+You&#8217;ll find recipes on how to cross the dynamic boundaries from static Kotlin in the <a href="#interop">Interoperability</a> section below, regardless of where the dynamic Groovy build logic resides.</p>
 </div>
 <div class="paragraph">
-<p>The former, <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a>, is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
-We saw <a href="#declarative-scripts">above</a> how to apply this practice even with external plugins published without the required metadata.</p>
+<p>There are two key best practices that make it easier to work within the static context of the Kotlin DSL:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using the <code>plugins {}</code> block</p>
+</li>
+<li>
+<p>Putting local build logic in the build&#8217;s <em>buildSrc</em> directory</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The latter, also <a href="https://docs.gradle.org/4.8/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a>, is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.</p>
+<p>The <code>plugins {}</code> block — <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a> — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
+You saw <a href="#declarative-scripts">above</a> how to apply this practice even with external plugins published without the required metadata.</p>
+</div>
+<div class="paragraph">
+<p>Utilizing the <em>buildSrc</em> project — also <a href="https://docs.gradle.org/4.8/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a> — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.</p>
 </div>
 <div class="sect2">
 <h3 id="kotlin_dsl_build_structure_samples"><a class="anchor" href="#kotlin_dsl_build_structure_samples"></a><a class="link" href="#kotlin_dsl_build_structure_samples">Kotlin DSL build structure samples</a></h3>
@@ -1364,19 +1205,19 @@ We saw <a href="#declarative-scripts">above</a> how to apply this practice even 
 <div class="ulist">
 <ul>
 <li>
-<p>the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/modularity">modularity</a> sample demonstrates the use of <code>apply(from = "")</code> to modularize build scripts,</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/modularity">modularity</a> sample demonstrates the use of <code>apply(from = "")</code> to modularize build scripts.</p>
 </li>
 <li>
-<p>the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-project-with-buildSrc">multi-project-with-buildSrc</a>, <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project">multi-kotlin-project</a>, <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project-with-buildSrc">multi-kotlin-project-with-buildSrc</a> and <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project-config-injection">multi-kotlin-project-config-injection</a> samples demonstrate various multi-project build structures,</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-project-with-buildSrc">multi-project-with-buildSrc</a>, <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project">multi-kotlin-project</a>, <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project-with-buildSrc">multi-kotlin-project-with-buildSrc</a> and <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/multi-kotlin-project-config-injection">multi-kotlin-project-config-injection</a> samples demonstrate various multi-project build structures.</p>
 </li>
 <li>
-<p>the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/gradle-plugin">gradle-plugin</a> sample demonstrates a Gradle plugin implemented in Kotlin and taking advantage of the <code>kotlin-dsl</code> plugin,</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/gradle-plugin">gradle-plugin</a> sample demonstrates a Gradle plugin implemented in Kotlin and taking advantage of the <code>kotlin-dsl</code> plugin.</p>
 </li>
 <li>
-<p>the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.8/userguide/composite_builds.html">Composite Builds</a>,</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.8/userguide/composite_builds.html">Composite Builds</a>.</p>
 </li>
 <li>
-<p>the <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/source-control">source-control</a> sample demonstrates how to use external <a href="https://github.com/gradle/gradle-native/issues/42">source dependencies</a>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/source-control">source-control</a> sample demonstrates how to use external <a href="https://github.com/gradle/gradle-native/issues/42">source dependencies</a>.</p>
 </li>
 </ul>
 </div>
@@ -1390,8 +1231,8 @@ We saw <a href="#declarative-scripts">above</a> how to apply this practice even 
 <h2 id="interop"><a class="anchor" href="#interop"></a><a class="link" href="#interop">Interoperability</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When mixing languages in your build logic you may have to cross language boundaries.
-An <a href="https://github.com/gradle/gradle">extreme example</a> would be a build that uses tasks and plugins implemented in Java, Groovy and Kotlin while mixing build scripts using the Kotlin DSL and the Groovy DSL.</p>
+<p>When mixing languages in your build logic, you may have to cross language boundaries.
+An extreme example would be a build that uses tasks and plugins that are implemented in Java, Groovy and Kotlin, while also using both Kotlin DSL and Groovy DSL build scripts.</p>
 </div>
 <div class="paragraph">
 <p>Quoting the Kotlin reference documentation:</p>
@@ -1407,16 +1248,16 @@ An <a href="https://github.com/gradle/gradle">extreme example</a> would be a bui
 <p>Both <a href="https://kotlinlang.org/docs/reference/java-interop.html">calling Java from Kotlin</a> and <a href="https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html">calling Kotlin from Java</a> are very well covered in the Kotlin reference documentation.</p>
 </div>
 <div class="paragraph">
-<p>The same mostly apply to interoperability with Groovy code.
-The Kotlin DSL also provides with a way to opt-in to Groovy semantics.</p>
+<p>The same mostly applies to interoperability with Groovy code.
+In addition, the Kotlin DSL provides several ways to opt into Groovy semantics, which we look at next.</p>
 </div>
 <div class="sect2">
 <h3 id="static_extensions"><a class="anchor" href="#static_extensions"></a><a class="link" href="#static_extensions">Static extensions</a></h3>
 <div class="paragraph">
-<p>Both Groovy and Kotlin languages support extending existing classes, respectively with <a href="http://groovy-lang.org/metaprogramming.html#_extension_modules">Groovy Extension modules</a> and <a href="https://kotlinlang.org/docs/reference/extensions.html">Kotlin extensions</a>.</p>
+<p>Both the Groovy and Kotlin languages support extending existing classes via <a href="http://groovy-lang.org/metaprogramming.html#_extension_modules">Groovy Extension modules</a> and <a href="https://kotlinlang.org/docs/reference/extensions.html">Kotlin extensions</a>.</p>
 </div>
 <div class="paragraph">
-<p>To call a Kotlin extension function from Groovy, call it as a static function passing the receiver as the first parameter:</p>
+<p>To call a Kotlin extension function from Groovy, call it as a static function, passing the receiver as the first parameter:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle</div>
@@ -1425,10 +1266,11 @@ The Kotlin DSL also provides with a way to opt-in to Groovy semantics.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Kotlin extension functions are package-level functions, see the <a href="https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#package-level-functions">Package-Level Functions</a> section of the Kotlin reference documentation to learn how to locate the name of the type declaring a given Kotlin extension.</p>
+<p>Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in see the <a href="https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#package-level-functions">Package-Level Functions</a> section of the Kotlin reference documentation.</p>
 </div>
 <div class="paragraph">
-<p>To call a Groovy dynamic extension from Kotlin, the same applies, call it as a static function passing the receiver as the first parameter:</p>
+<p>To call a Groovy extension method from Kotlin, the same approach applies: call it as a static function passing the receiver as the first parameter.
+Here&#8217;s an example:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -1440,24 +1282,25 @@ The Kotlin DSL also provides with a way to opt-in to Groovy semantics.</p>
 <div class="sect2">
 <h3 id="named_parameters_and_default_arguments"><a class="anchor" href="#named_parameters_and_default_arguments"></a><a class="link" href="#named_parameters_and_default_arguments">Named parameters and default arguments</a></h3>
 <div class="paragraph">
-<p>Both Groovy and Kotlin languages support named function parameters and default arguments.
-They are <a href="https://kotlinlang.org/docs/reference/functions.html#named-arguments">natively</a> <a href="https://kotlinlang.org/docs/reference/functions.html#named-arguments">supported</a> by Kotlin.
-Groovy supports <a href="http://groovy-lang.org/objectorientation.html#_named_arguments">named arguments</a> in a non type safe way based on a <code>Map&lt;String, ?&gt;</code> parameter, thus they cannot be combined with <a href="http://groovy-lang.org/objectorientation.html#_default_arguments">default arguments</a>.</p>
+<p>Both the Groovy and Kotlin languages support named function parameters and default arguments, although they are implemented very differently.
+Kotlin has fully-fledged support for both, as described in the Kotlin language reference under <a href="https://kotlinlang.org/docs/reference/functions.html#named-arguments">named arguments</a> and <a href="https://kotlinlang.org/docs/reference/functions.html#default-arguments">default arguments</a>.
+Groovy implements <a href="http://groovy-lang.org/objectorientation.html#_named_arguments">named arguments</a> in a non-type-safe way based on a <code>Map&lt;String, ?&gt;</code> parameter, which means they cannot be combined with <a href="http://groovy-lang.org/objectorientation.html#_default_arguments">default arguments</a>.
+In other words, you can only use one or the other in Groovy for any given method.</p>
+</div>
+<div class="sect3">
+<h4 id="calling_kotlin_from_groovy"><a class="anchor" href="#calling_kotlin_from_groovy"></a><a class="link" href="#calling_kotlin_from_groovy">Calling Kotlin from Groovy</a></h4>
+<div class="paragraph">
+<p>To call a Kotlin function that has named arguments from Groovy, just use a normal method call with positional parameters.
+There is no way to provide values by argument name.</p>
 </div>
 <div class="paragraph">
-<p><strong>When calling Kotlin from Groovy</strong></p>
+<p>To call a Kotlin function that has default arguments from Groovy, always pass values for all the function parameters.</p>
 </div>
-<div class="paragraph">
-<p>To call a Kotlin function with named arguments from Groovy, you can&#8217;t name arguments, just call the function without naming parameters.</p>
 </div>
+<div class="sect3">
+<h4 id="calling_kotlin_from_groovy_2"><a class="anchor" href="#calling_kotlin_from_groovy_2"></a><a class="link" href="#calling_kotlin_from_groovy_2">Calling Kotlin from Groovy</a></h4>
 <div class="paragraph">
-<p>To call a Kotlin function with default arguments from Groovy, always pass all parameters.</p>
-</div>
-<div class="paragraph">
-<p><strong>When calling Kotlin from Groovy</strong></p>
-</div>
-<div class="paragraph">
-<p>To call a Groovy function with named arguments from Kotlin, you need to pass a <code>Map&lt;String, ?&gt;</code>.</p>
+<p>To call a Groovy function with named arguments from Kotlin, you need to pass a <code>Map&lt;String, ?&gt;</code>, as shown in this example:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -1469,32 +1312,15 @@ Groovy supports <a href="http://groovy-lang.org/objectorientation.html#_named_ar
 </div>
 </div>
 <div class="paragraph">
-<p>To call a Groovy function with default arguments from Kotlin, always pass all parameters.</p>
+<p>To call a Groovy function with default arguments from Kotlin, always pass values for all the parameters.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="groovy_closures_from_kotlin"><a class="anchor" href="#groovy_closures_from_kotlin"></a><a class="link" href="#groovy_closures_from_kotlin">Groovy Closures from Kotlin</a></h3>
+<h3 id="groovy_closures_from_kotlin"><a class="anchor" href="#groovy_closures_from_kotlin"></a><a class="link" href="#groovy_closures_from_kotlin">Groovy closures from Kotlin</a></h3>
 <div class="paragraph">
-<p>Sometimes, you may have to use Groovy functions taking <a href="http://groovy-lang.org/closures.html">Closures</a> from Kotlin code.
-Some third party plugins written in Groovy expect that Groovy closures will be passed as arguments.</p>
-</div>
-<div class="paragraph">
-<p>In order to provide a way to construct closures while preserving Kotlin&#8217;s strong typing two helper methods exist:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>closureOf&lt;T&gt; {}</code>,</p>
-</li>
-<li>
-<p><code>delegateClosureOf&lt;T&gt; {}</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Both methods are useful in different circumstances and depend upon the method you are passing the
-<code>Closure</code> into.
-To understand the difference between the two types of closures <a href="http://groovy-lang.org/closures.html">the Groovy reference documentation</a> may be helpful.</p>
+<p>You may sometimes have to call Groovy methods that take <a href="http://groovy-lang.org/closures.html">Closure</a> arguments from Kotlin code.
+For example, some third-party plugins written in Groovy expect closure arguments.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1503,10 +1329,26 @@ To understand the difference between the two types of closures <a href="http://g
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Gradle plugins written in any language should prefer the typed <code>Action&lt;T&gt;</code> that is automatically mapped to Groovy closures and Kotlin lambdas.
+Gradle plugins written in any language should prefer the type <code>Action&lt;T&gt;</code> type in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>In order to provide a way to construct closures while preserving Kotlin&#8217;s strong typing, two helper methods exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>closureOf&lt;T&gt; {}</code></p>
+</li>
+<li>
+<p><code>delegateClosureOf&lt;T&gt; {}</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both methods are useful in different circumstances and depend upon the method you are passing the <code>Closure</code> instance into.</p>
 </div>
 <div class="paragraph">
 <p>Some plugins expect simple closures, as with the <a href="https://plugins.gradle.org/plugin/com.jfrog.bintray">Bintray</a> plugin:</p>
@@ -1544,10 +1386,11 @@ will resolve the problem.</p>
 <div class="sect2">
 <h3 id="the_kotlin_dsl_groovy_builder"><a class="anchor" href="#the_kotlin_dsl_groovy_builder"></a><a class="link" href="#the_kotlin_dsl_groovy_builder">The Kotlin DSL Groovy Builder</a></h3>
 <div class="paragraph">
-<p>If some plugin makes heavy use of <a href="http://groovy-lang.org/metaprogramming.html">Groovy meta-programming</a>, then, using it from Kotlin, or Java or any statically compiled language, can be very cumbersome.</p>
+<p>If some plugin makes heavy use of <a href="http://groovy-lang.org/metaprogramming.html">Groovy metaprogramming</a>, then using it from Kotlin or Java or any statically-compiled language can be very cumbersome.</p>
 </div>
 <div class="paragraph">
-<p>The Kotlin DSL provides a <code>withGroovyBuilder {}</code> utility extension that brings the Groovy meta-programming semantics on <code>Any</code> object.</p>
+<p>The Kotlin DSL provides a <code>withGroovyBuilder {}</code> utility extension that attaches the Groovy metaprogramming semantics to objects of type <code>Any</code>.
+The following example demonstrates several features of the method on the object <code>target</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -1593,14 +1436,14 @@ will resolve the problem.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder {}</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.8/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom pom using the Gradle core <code>maven</code> plugin.
-Note that the recommended <code>maven-publish</code> plugin provides a type safe and Kotlin friendly DSL that allows to easily do <a href="https://docs.gradle.org/4.8/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder()</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.8/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom POM using Gradle&#8217;s core <a href="https://docs.gradle.org/4.8/userguide/maven_plugin.html">Maven Plugin</a>.
+Note that the recommended <a href="https://docs.gradle.org/4.8/userguide/publishing_maven.html">Maven Publish Plugin</a> provides a type-safe and Kotlin-friendly DSL that allows you to easily do <a href="https://docs.gradle.org/4.8/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a> without resorting to <code>withGroovyBuilder()</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="using_a_groovy_script"><a class="anchor" href="#using_a_groovy_script"></a><a class="link" href="#using_a_groovy_script">Using a Groovy script</a></h3>
 <div class="paragraph">
-<p>Another option is to keep the configuration for that particular plugin in a Groovy DSL build script applied from a Kotlin DSL build script:</p>
+<p>Another option when dealing with problematic plugins that assume a Groovy DSL build script is to configure them in a Groovy DSL build script that is applied from the main Kotlin DSL build script:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
@@ -1644,9 +1487,9 @@ apply(from = "dynamic-groovy-plugin-configuration.gradle")  <i class="conum" dat
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you had a tour of the main differences between Gradle&#8217;s Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
-You also took a glance at possible migration strategies in the light of the structure of builds.
-Last but not least you learnt how the two DSLs inter-operate.</p>
+<p>In this guide you had a tour of the main differences between Gradle&#8217;s Groovy DSL and Kotlin DSL by comparing build scripts doing common things, while being introduced to the main idioms of the Kotlin DSL.
+You also took a look at possible migration strategies in the light of the structure of builds.
+Last, but not least, you learnt how the two DSLs inter-operate.</p>
 </div>
 <div class="sect2">
 <h3 id="next_steps"><a class="anchor" href="#next_steps"></a><a class="link" href="#next_steps">Next steps</a></h3>
