@@ -318,6 +318,7 @@ On some builds with slow configuration time (please check out the <a href="https
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'java'
     id 'jacoco'
+    id 'maven-publish'
     id 'org.springframework.boot' version '2.0.2.RELEASE'
 }</code></pre>
 </div>
@@ -326,28 +327,20 @@ On some builds with slow configuration time (please check out the <a href="https
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
     java
-    id("jacoco")
+    jacoco
+    `maven-publish`
     id("org.springframework.boot") version "2.0.2.RELEASE"
 }</code></pre>
 </div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-You can switch between the Groovy and Kotlin versions of the script by clicking the tabs at the top of the sample.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The Kotlin DSL provides property extensions for all <a href="https://docs.gradle.org/4.8/userguide/standard_plugins.html">Gradle core plugins</a>,
+as shown above with the <code>java</code>, <code>jacoco</code> or <code>maven-publish</code> declaration.</p>
 </div>
 <div class="paragraph">
-<p>As you can see with the <code>jacoco</code> example, the same syntax can be used in Groovy and Kotlin, except for the double quotes and parentheses that must be used in Kotlin.</p>
-</div>
-<div class="paragraph">
-<p>The Kotlin DSL also defines Kotlin property extensions that you can use for all core Gradle plugins, as shown above with the <code>java</code> plugin declaration.</p>
+<p>Third party plugins can be applied the same way as with the Groovy DSL. Except for the double quotes and parentheses.
+You can also apply core plugins with that style. But the statically-typed accessors are recommended since they are
+type-safe and will be autocompleted by your IDE.</p>
 </div>
 <div class="paragraph">
 <p>You can also use the imperative <code>apply</code> syntax, but then non-core plugins must be included on the classpath of the build script:</p>
@@ -359,7 +352,7 @@ You can switch between the Groovy and Kotlin versions of the script by clicking 
         gradlePluginPortal()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE')
     }
 }
 
@@ -413,11 +406,11 @@ The following sample shows how this works for the Jacoco Plugin.</p>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id("jacoco")
+    id 'jacoco'
 }
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = '0.8.1'
 }</code></pre>
 </div>
 </div>
