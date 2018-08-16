@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>Migrating build logic from Groovy to Kotlin</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
 <link crossorigin href="//assets.gradle.com" rel="preconnect">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,400i">
-<link rel="stylesheet" href="https://guides.gradle.org/css/asciidoctor.css">
-<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.8.css">
+<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.10.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://guides.gradle.org/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-16x16.png" sizes="16x16">
 <link rel="manifest" href="https://guides.gradle.org/icon/manifest.json">
 <link rel="shortcut icon" href="https://guides.gradle.org/icon/favicon.ico">
-<script defer src="https://guides.gradle.org/js/guides-4.8.js"></script>
+<script defer src="https://guides.gradle.org/js/guides-4.10.js"></script>
 <script defer src="https://guides.gradle.org/js/set-time-to-complete-text.js"></script>
 <script async src="https://guides.gradle.org/js/autotrack.js"></script>
 
@@ -144,9 +144,9 @@
         <ul>
             <li><a class="nav-dropdown" data-toggle="collapse" href="#ci-integration" aria-expanded="false" aria-controls="ci-integration">Continuous Integration</a>
                 <ul id="ci-integration">
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-jenkins">Using Gradle with Jenkins</a></li>
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-teamcity">Using Gradle with TeamCity</a></li>
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-travisci">Using Gradle with Travis CI</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-jenkins/">Using Gradle with Jenkins</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-teamcity/">Using Gradle with TeamCity</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-travisci/">Using Gradle with Travis CI</a></li>
                 </ul>
             </li>
         </ul>
@@ -167,22 +167,6 @@
     <div class="chapter">
 <div id="header">
 <h1>Migrating build logic from Groovy to Kotlin</h1>
-</div>
-<div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph lead">
-<p>This guide will walk you through converting your Groovy-based Gradle build scripts to Kotlin.</p>
-</div>
-<div class="paragraph">
-<p>Gradle&#8217;s newer Kotlin DSL provides a pleasant editing experience in supported IDEs: content-assist, refactoring, documentation, and more.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/intellij-idea-android-studio.png" alt="IntelliJ IDEA and Android Studio">
-</div>
-</div>
-</div>
 <div id="toc" class="toc">
 <div id="toctitle">Contents</div>
 <ul class="sectlevel1">
@@ -200,6 +184,22 @@
 <li><a href="#summary">Summary</a></li>
 <li><a href="#help_improve_this_guide">Help improve this guide</a></li>
 </ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph lead">
+<p>This guide will walk you through converting your Groovy-based Gradle build scripts to Kotlin.</p>
+</div>
+<div class="paragraph">
+<p>Gradle&#8217;s newer Kotlin DSL provides a pleasant editing experience in supported IDEs: content-assist, refactoring, documentation, and more.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/intellij-idea-android-studio.png" alt="IntelliJ IDEA and Android Studio">
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -274,7 +274,7 @@ On some builds with slow configuration time (please check out the <a href="https
 <p>To use the Kotlin DSL, simply name your files <code>build.gradle.kts</code> instead of <code>build.gradle</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://docs.gradle.org/4.8/userguide/build_lifecycle.html#sec:settings_file">settings file</a>, <code>settings.gradle</code>, can also be renamed <code>settings.gradle.kts</code>.</p>
+<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/build_lifecycle.html#sec:settings_file">settings file</a>, <code>settings.gradle</code>, can also be renamed <code>settings.gradle.kts</code>.</p>
 </div>
 <div class="paragraph">
 <p>In a multi-project build, you can have some modules using the Groovy DSL (with <code>build.gradle</code>) and others using the Kotlin DSL (with <code>build.gradle.kts</code>).</p>
@@ -288,7 +288,7 @@ On some builds with slow configuration time (please check out the <a href="https
 <p>Name scripts that are applied to <code>Settings</code> according to the pattern <code>*.settings.gradle.kts</code>,</p>
 </li>
 <li>
-<p>Name <a href="https://docs.gradle.org/4.8/userguide/init_scripts.html">init scripts</a> according to the pattern <code>*.init.gradle.kts</code>.</p>
+<p>Name <a href="https://docs.gradle.org/4.10-rc-2/userguide/init_scripts.html">init scripts</a> according to the pattern <code>*.init.gradle.kts</code>.</p>
 </li>
 </ul>
 </div>
@@ -334,7 +334,7 @@ On some builds with slow configuration time (please check out the <a href="https
 </div>
 </div>
 <div class="paragraph">
-<p>The Kotlin DSL provides property extensions for all <a href="https://docs.gradle.org/4.8/userguide/standard_plugins.html">Gradle core plugins</a>,
+<p>The Kotlin DSL provides property extensions for all <a href="https://docs.gradle.org/4.10-rc-2/userguide/standard_plugins.html">Gradle core plugins</a>,
 as shown above with the <code>java</code>, <code>jacoco</code> or <code>maven-publish</code> declaration.</p>
 </div>
 <div class="paragraph">
@@ -502,7 +502,7 @@ We will show you in this section how to do that for the Android Plugin for Gradl
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When publishing plugins, please use Gradle&#8217;s built-in <a href="https://docs.gradle.org/4.8/userguide/java_gradle_plugin.html">Java Gradle Plugin</a> Plugin. It automates the publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.
+When publishing plugins, please use Gradle&#8217;s built-in <a href="https://docs.gradle.org/4.10-rc-2/userguide/java_gradle_plugin.html">Java Gradle Plugin</a> Plugin. It automates the publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.
 </td>
 </tr>
 </table>
@@ -583,7 +583,7 @@ android {                                           <i class="conum" data-value=
 </table>
 </div>
 <div class="paragraph">
-<p>See the <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle user manual for more information.</p>
+<p>See the <a href="https://docs.gradle.org/4.10-rc-2/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle user manual for more information.</p>
 </div>
 <div class="paragraph">
 <p>The same approach can be used to resolve plugins from composite builds, which <a href="https://github.com/gradle/gradle/issues/2528">do not expose plugin markers</a> yet.
@@ -1058,7 +1058,7 @@ dependencies {
 <h2 id="multi_project_builds"><a class="anchor" href="#multi_project_builds"></a><a class="link" href="#multi_project_builds">Multi-project builds</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html">model for multi-project builds</a> is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
+<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html">model for multi-project builds</a> is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
 Multi-project builds can even have a mix of the two.</p>
 </div>
 <div class="paragraph">
@@ -1135,13 +1135,13 @@ In other words, project build scripts are evaluated top to bottom according to t
 <td class="content">
 <div class="title">Configuration on demand</div>
 <div class="paragraph">
-<p>Enabling the incubating <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard-to-diagnose problems.
+<p>Enabling the incubating <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard-to-diagnose problems.
 The strictness of the Gradle Kotlin DSL makes it even more likely that problems will arise.
 In order to save you trouble, you should disable it if it&#8217;s already enabled.</p>
 </div>
 <div class="paragraph">
 <p>The same is true for <code>evaluationDependsOn(projectPath)</code> and <code>evaluationDependsOnChildren()</code>.
-Favor <a href="https://docs.gradle.org/4.8/userguide/multi_project_builds.html#sec:decoupled_projects">decoupling your projects</a> instead.</p>
+Favor <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html#sec:decoupled_projects">decoupling your projects</a> instead.</p>
 </div>
 </td>
 </tr>
@@ -1196,11 +1196,11 @@ You&#8217;ll find recipes on how to cross the dynamic boundaries from static Kot
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>plugins {}</code> block — <a href="https://docs.gradle.org/4.8/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a> — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
+<p>The <code>plugins {}</code> block — <a href="https://docs.gradle.org/4.10-rc-2/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a> — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
 You saw <a href="#declarative-scripts">above</a> how to apply this practice even with external plugins published without the required metadata.</p>
 </div>
 <div class="paragraph">
-<p>Utilizing the <em>buildSrc</em> project — also <a href="https://docs.gradle.org/4.8/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a> — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.</p>
+<p>Utilizing the <em>buildSrc</em> project — also <a href="https://docs.gradle.org/4.10-rc-2/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a> — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.</p>
 </div>
 <div class="sect2">
 <h3 id="kotlin_dsl_build_structure_samples"><a class="anchor" href="#kotlin_dsl_build_structure_samples"></a><a class="link" href="#kotlin_dsl_build_structure_samples">Kotlin DSL build structure samples</a></h3>
@@ -1219,7 +1219,7 @@ You saw <a href="#declarative-scripts">above</a> how to apply this practice even
 <p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/gradle-plugin">gradle-plugin</a> sample demonstrates a Gradle plugin implemented in Kotlin and taking advantage of the <code>kotlin-dsl</code> plugin.</p>
 </li>
 <li>
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.8/userguide/composite_builds.html">Composite Builds</a>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.10-rc-2/userguide/composite_builds.html">Composite Builds</a>.</p>
 </li>
 <li>
 <p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/source-control">source-control</a> sample demonstrates how to use external <a href="https://github.com/gradle/gradle-native/issues/42">source dependencies</a>.</p>
@@ -1441,8 +1441,8 @@ The following example demonstrates several features of the method on the object 
 </table>
 </div>
 <div class="paragraph">
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder()</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.8/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom POM using Gradle&#8217;s core <a href="https://docs.gradle.org/4.8/userguide/maven_plugin.html">Maven Plugin</a>.
-Note that the recommended <a href="https://docs.gradle.org/4.8/userguide/publishing_maven.html">Maven Publish Plugin</a> provides a type-safe and Kotlin-friendly DSL that allows you to easily do <a href="https://docs.gradle.org/4.8/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a> without resorting to <code>withGroovyBuilder()</code>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder()</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.10-rc-2/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom POM using Gradle&#8217;s core <a href="https://docs.gradle.org/4.10-rc-2/userguide/maven_plugin.html">Maven Plugin</a>.
+Note that the recommended <a href="https://docs.gradle.org/4.10-rc-2/userguide/publishing_maven.html">Maven Publish Plugin</a> provides a type-safe and Kotlin-friendly DSL that allows you to easily do <a href="https://docs.gradle.org/4.10-rc-2/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a> without resorting to <code>withGroovyBuilder()</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1501,7 +1501,7 @@ Last, but not least, you learnt how the two DSLs inter-operate.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>The <a href="https://docs.gradle.org/4.8/userguide/userguide.html#best-practices">Gradle Best Practices</a> user manual chapters contain reference documentation on how to structure your builds.</p>
+<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/userguide.html#best-practices">Gradle Best Practices</a> user manual chapters contain reference documentation on how to structure your builds.</p>
 </li>
 <li>
 <p>The <a href="kotlin-dsl-samples"><code>kotlin-dsl</code> samples</a> contain example of various build structures using the Kotlin DSL.</p>
