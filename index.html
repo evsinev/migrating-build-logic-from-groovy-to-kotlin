@@ -175,6 +175,7 @@
 <li><a href="#applying_plugins">Applying plugins</a></li>
 <li><a href="#configuring-plugins">Configuring plugins</a></li>
 <li><a href="#declarative-scripts">Keeping build scripts declarative</a></li>
+<li><a href="#configuration-avoidance">Configuration avoidance</a></li>
 <li><a href="#configuring-tasks">Configuring tasks</a></li>
 <li><a href="#creating_tasks">Creating tasks</a></li>
 <li><a href="#configurations-and-dependencies">Configurations and dependencies</a></li>
@@ -274,7 +275,7 @@ On some builds with slow configuration time (please check out the <a href="https
 <p>To use the Kotlin DSL, simply name your files <code>build.gradle.kts</code> instead of <code>build.gradle</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/build_lifecycle.html#sec:settings_file">settings file</a>, <code>settings.gradle</code>, can also be renamed <code>settings.gradle.kts</code>.</p>
+<p>The <a href="https://docs.gradle.org/4.10/userguide/build_lifecycle.html#sec:settings_file">settings file</a>, <code>settings.gradle</code>, can also be renamed <code>settings.gradle.kts</code>.</p>
 </div>
 <div class="paragraph">
 <p>In a multi-project build, you can have some modules using the Groovy DSL (with <code>build.gradle</code>) and others using the Kotlin DSL (with <code>build.gradle.kts</code>).</p>
@@ -288,7 +289,7 @@ On some builds with slow configuration time (please check out the <a href="https
 <p>Name scripts that are applied to <code>Settings</code> according to the pattern <code>*.settings.gradle.kts</code>,</p>
 </li>
 <li>
-<p>Name <a href="https://docs.gradle.org/4.10-rc-2/userguide/init_scripts.html">init scripts</a> according to the pattern <code>*.init.gradle.kts</code>.</p>
+<p>Name <a href="https://docs.gradle.org/4.10/userguide/init_scripts.html">init scripts</a> according to the pattern <code>*.init.gradle.kts</code>.</p>
 </li>
 </ul>
 </div>
@@ -313,7 +314,12 @@ On some builds with slow configuration time (please check out the <a href="https
 <div class="paragraph">
 <p>Here&#8217;s an example using the declarative <code>plugins {}</code> block:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'java'
@@ -323,7 +329,12 @@ On some builds with slow configuration time (please check out the <a href="https
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
     java
@@ -333,8 +344,12 @@ On some builds with slow configuration time (please check out the <a href="https
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>The Kotlin DSL provides property extensions for all <a href="https://docs.gradle.org/4.10-rc-2/userguide/standard_plugins.html">Gradle core plugins</a>,
+<p>The Kotlin DSL provides property extensions for all <a href="https://docs.gradle.org/4.10/userguide/standard_plugins.html">Gradle core plugins</a>,
 as shown above with the <code>java</code>, <code>jacoco</code> or <code>maven-publish</code> declaration.</p>
 </div>
 <div class="paragraph">
@@ -345,7 +360,12 @@ type-safe and will be autocompleted by your IDE.</p>
 <div class="paragraph">
 <p>You can also use the imperative <code>apply</code> syntax, but then non-core plugins must be included on the classpath of the build script:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
@@ -361,7 +381,12 @@ apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     repositories {
@@ -375,6 +400,10 @@ apply plugin: 'org.springframework.boot'</code></pre>
 apply(plugin = "java")
 apply(plugin = "jacoco")
 apply(plugin = "org.springframework.boot")</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -403,7 +432,12 @@ apply(plugin = "org.springframework.boot")</code></pre>
 <p>Many plugins come with extensions to configure them. If those plugins are applied using the declarative <code>plugins {}</code> block, then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
 The following sample shows how this works for the Jacoco Plugin.</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'jacoco'
@@ -414,7 +448,12 @@ jacoco {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
     jacoco
@@ -425,11 +464,20 @@ jacoco {
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>By contrast, if you use the imperative <code>apply()</code> function to apply a plugin, then you will have to use the <code>configure&lt;T&gt;()</code> function to configure that plugin.
 The following sample shows how this works for the Checkstyle Plugin by explicitly declaring the plugin&#8217;s extension class — <code>CheckstyleExtension</code> — in the <code>configure&lt;T&gt;()</code> function:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin: "checkstyle"
 
@@ -438,13 +486,22 @@ checkstyle {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">apply(plugin = "checkstyle")
 
 configure&lt;CheckstyleExtension&gt; {
     maxErrors = 10
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -502,7 +559,7 @@ We will show you in this section how to do that for the Android Plugin for Gradl
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When publishing plugins, please use Gradle&#8217;s built-in <a href="https://docs.gradle.org/4.10-rc-2/userguide/java_gradle_plugin.html">Java Gradle Plugin</a> Plugin. It automates the publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.
+When publishing plugins, please use Gradle&#8217;s built-in <a href="https://docs.gradle.org/4.10/userguide/java_gradle_plugin.html">Java Gradle Plugin</a> Plugin. It automates the publication of the metadata necessary to make your plugins usable with the <code>plugins {}</code> block.
 </td>
 </tr>
 </table>
@@ -524,6 +581,10 @@ This is done in two steps:</p>
 <div class="paragraph">
 <p>The following example shows you how to add a plugin repository to the build via a <code>pluginManagement {}</code> block in the settings file:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
@@ -535,10 +596,18 @@ This is done in two steps:</p>
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Providing the ID-to-artifact mapping is also done in the settings file, again within the <code>pluginManagement {}</code> block.
 The following sample maps the <code>com.android.application</code> ID to the <code>com.android.tools.build:gradle:&lt;version&gt;</code> artifact coordinate:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
@@ -554,9 +623,17 @@ The following sample maps the <code>com.android.application</code> ID to the <co
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Once you have completed both steps, you can apply the plugin using the <code>plugins {}</code> block and benefit from the type-safe plugin extension accessors in your build files:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
@@ -568,6 +645,10 @@ android {                                           <i class="conum" data-value=
     buildToolsVersion("27.0.3")
     compileSdkVersion(27)
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="colist arabic">
@@ -583,11 +664,47 @@ android {                                           <i class="conum" data-value=
 </table>
 </div>
 <div class="paragraph">
-<p>See the <a href="https://docs.gradle.org/4.10-rc-2/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle user manual for more information.</p>
+<p>See the <a href="https://docs.gradle.org/4.10/userguide/plugins.html#sec:plugin_management">Plugin Management</a> section of the Gradle user manual for more information.</p>
 </div>
 <div class="paragraph">
 <p>The same approach can be used to resolve plugins from composite builds, which <a href="https://github.com/gradle/gradle/issues/2528">do not expose plugin markers</a> yet.
 Simply map the plugin ID to the corresponding artifact coordinates as shown in the Android samples above.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-avoidance"><a class="anchor" href="#configuration-avoidance"></a><a class="link" href="#configuration-avoidance">Configuration avoidance</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Gradle 4.9 introduced a new API for creating and configuring tasks in build scripts and plugins. The intent is for this new API to eventually replace the existing API.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>One of the major differences between the existing and new Gradle Tasks API is whether or not Gradle spends the time to create <code>Task</code> instances and run configuration code. The new API allows Gradle to delay or completely avoid configuring tasks that will never be executed in a build. For example, when compiling code, Gradle does not need to configure tasks that run tests.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>See the <a href="https://blog.gradle.org/preview-avoiding-task-configuration-time"><em>Evolving the Gradle API to reduce configuration time</em></a> blog post and the <a href="https://docs.gradle.org/4.10/userguide/task_configuration_avoidance.html">Task Configuration Avoidance</a> chapter in the user manual for more information.</p>
+</div>
+<div class="paragraph">
+<p>The Gradle Kotlin DSL embraces the new API by providing DSL constructs to make it easier to use. Rest assured, the whole Gradle API remains available.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If your Groovy build logic is not using the new API, doing the migration to Kotlin and to the new API in distinct steps will make it easier to validate the build behavior.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following two sections will demonstrate both lazy and eager task creation and configuration.</p>
 </div>
 </div>
 </div>
@@ -599,16 +716,60 @@ Simply map the plugin ID to the corresponding artifact coordinates as shown in t
 Since Kotlin is a statically typed language, you need to know and provide the type of the task if you want to access any of its type-specific properties and methods.</p>
 </div>
 <div class="paragraph">
-<p>You also can&#8217;t access the task directly as a property of the build script as you can in a Groovy build script. Instead, you use the <code>getByName&lt;T&gt;()</code> method on the <code>tasks</code> collection, as demonstrated in the following sample:</p>
+<p>You also can&#8217;t access the task directly as a property of the build script as you can in a Groovy build script. Instead, you query the <code>tasks</code> collection by name and type, as demonstrated in the following sample:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.named('jar').configure {
+    archiveName = 'foo.jar'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.named&lt;Jar&gt;("jar") {
+    archiveName = "foo.jar"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">jar.archiveName = 'foo.jar'</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.getByName&lt;Jar&gt;("jar").archiveName = "foo.jar"</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -618,7 +779,7 @@ Since Kotlin is a statically typed language, you need to know and provide the ty
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that it&#8217;s necessary to specify the type of the task explicitly. Otherwise, the script won&#8217;t compile because the inferred type of <code>jar</code> will be <code>Task</code>, not <code>Jar</code>, and the <code>archiveName</code> property is specific to the <code>Jar</code> task type.
+Note that it&#8217;s necessary to specify the type of the task explicitly. Otherwise, the script won&#8217;t compile because the inferred type will be <code>Task</code>, not <code>Jar</code>, and the <code>archiveName</code> property is specific to the <code>Jar</code> task type.
 </td>
 </tr>
 </table>
@@ -626,24 +787,113 @@ Note that it&#8217;s necessary to specify the type of the task explicitly. Other
 <div class="paragraph">
 <p>You can, however, omit the type if you only need to configure properties or call methods that are common to all tasks, i.e. they are declared on the <code>Task</code> interface:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.named('test').configure {
+    doLast {
+        println('test completed')
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.named&lt;Task&gt;("test") {
+    doLast {
+        println("test completed")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">test.doLast {
-    println("test completed")
+    println('test completed')
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks["test"].doLast {
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.getByName("test").doLast {
     println("test completed")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
 <p>If you need to configure several properties or call multiple methods on the same task, you can group them in a block as follows:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.named('jar').configure {
+    archiveName = 'foo.jar'
+    into('META-INF') {
+        from('bar')
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.named&lt;Jar&gt;("jar") {
+    archiveName = "foo.jar"
+    into("META-INF") {
+        from("bar")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">jar {
     archiveName = 'foo.jar'
@@ -653,7 +903,12 @@ Note that it&#8217;s necessary to specify the type of the task explicitly. Other
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.getByName&lt;Jar&gt;("jar") {
     archiveName = "foo.jar"
@@ -663,12 +918,64 @@ Note that it&#8217;s necessary to specify the type of the task explicitly. Other
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>An alternative and more idiomatic way to configure tasks compared to <code>tasks.getByName&lt;T&gt;()</code> is through the use of Kotlin&#8217;s <a href="https://kotlinlang.org/docs/reference/delegated-properties.html">delegated properties</a>.
+<p>An alternative and more idiomatic way to configure tasks compared to using the <code>tasks</code> collection API is through the use of Kotlin&#8217;s <a href="https://kotlinlang.org/docs/reference/delegated-properties.html">delegated properties</a>.
 This approach is particularly useful if you want to reference the task at a later stage in the build script.
 The following sample initially configures the <code>jar</code> task&#8217;s <code>archiveName</code> property and then later adds an <code>into()</code> declaration via the new delegated property <code>jar</code>:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">def jar = tasks.named('jar')
+jar.configure {
+    archiveName = 'foo.jar'
+}
+
+jar.configure {
+    into('META-INF') {
+        from('bar')
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">val jar by tasks.existing(Jar::class) {
+    archiveName = "foo.jar"
+}
+
+jar {
+    into("META-INF") {
+        from("bar")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">jar {
     archiveName = 'foo.jar'
@@ -679,7 +986,12 @@ jar.into('META-INF') {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">val jar by tasks.getting(Jar::class) {
     archiveName = "foo.jar"
@@ -688,6 +1000,10 @@ jar.into('META-INF') {
 jar.into("META-INF") {
     from("bar")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -745,7 +1061,69 @@ Type
 Note that the IDE can assist us with the required imports, so we only need the simple names, i.e. without the full packages.
 Here&#8217;s the resulting build script, complete with imports:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+}
+
+tasks.named('bootJar').configure {
+    archiveName = 'app.jar'
+    mainClassName = 'com.example.demo.Demo'
+}
+
+tasks.named('bootRun').configure {
+    main = 'com.example.demo.Demo'
+    args '--spring.profiles.active=demo'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
+
+plugins {
+    java
+    id("org.springframework.boot") version "2.0.2.RELEASE"
+}
+
+tasks {
+    named&lt;BootJar&gt;("bootJar") {
+        archiveName = "app.jar"
+        mainClassName = "com.example.demo.Demo"
+    }
+
+    named&lt;BootRun&gt;("bootRun") {
+        main = "com.example.demo.Demo"
+        args("--spring.profiles.active=demo")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'java'
@@ -763,7 +1141,12 @@ bootRun {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -788,41 +1171,169 @@ tasks {
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="creating_tasks"><a class="anchor" href="#creating_tasks"></a><a class="link" href="#creating_tasks">Creating tasks</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Creating tasks can be done on the <code>tasks</code> container, using the <code>create()</code> method shown here:</p>
+<p>Creating tasks can be done using the script top-level method named <code>task(&#8230;&#8203;)</code>:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL only</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">task greeting {
+    doLast { println 'Hello, World!' }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">task("greeting") {
+    doLast { println("Hello, World!") }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Registering or creating tasks can also be done on the <code>tasks</code> container, respectively using the <code>register(&#8230;&#8203;)</code> and <code>create(&#8230;&#8203;)</code> methods as shown here:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.register('greeting') {
+    doLast { println("Hello, World!") }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.register("greeting") {
+    doLast { println("Hello, World!") }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.create('greeting') {
     doLast { println("Hello, World!") }
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.create("greeting") {
     doLast { println("Hello, World!") }
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>or by using Kotlin delegated properties for when you need a reference to the created task for later:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">def greeting = tasks.create('greeting') {
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">// greeting is of type TaskProvider&lt;Task&gt;
+def greeting = tasks.register('greeting') {
     doLast { println("Hello, World!") }
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">val greeting by tasks.creating {
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">// greeting is of type TaskProvider&lt;Task&gt;
+val greeting by tasks.registering {
     doLast { println("Hello, World!") }
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">// greeting is of type Task
+def greeting = tasks.create('greeting') {
+    doLast { println("Hello, World!") }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">// greeting is of type Task
+val greeting by tasks.creating {
+    doLast { println("Hello, World!") }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -830,7 +1341,13 @@ tasks {
 This can also be done using the same <code>create()</code> and <code>creating()</code> methods.
 Here&#8217;s an example that creates a new task of type <code>Zip</code>:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.create(name: 'docZip', type: Zip) {
     archiveName = 'doc.zip'
@@ -838,7 +1355,43 @@ Here&#8217;s an example that creates a new task of type <code>Zip</code>:</p>
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.register&lt;Zip&gt;("docZip") {
+    archiveName = "doc.zip"
+    from("doc")
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.create(name: 'docZip', type: Zip) {
+    archiveName = 'doc.zip'
+    from 'doc'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.create&lt;Zip&gt;("docZip") {
     archiveName = "doc.zip"
@@ -846,23 +1399,77 @@ Here&#8217;s an example that creates a new task of type <code>Zip</code>:</p>
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Here&#8217;s the same task created using a delegated property:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="title">Using the configuration avoidance API &amp; DSL</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">def docZip = tasks.create(name: 'docZip', type: Zip) {
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">// docZip is of type TaskProvider&lt;Zip&gt;
+def docZip = tasks.register('docZip', Zip) {
     archiveName = 'doc.zip'
     from 'doc'
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">val docZip by tasks.creating(Zip::class) {
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">// docZip is of type TaskProvider&lt;Zip&gt;
+val docZip by tasks.registering(Zip::class) {
     archiveName = "doc.zip"
     from("doc")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Using the eager API &amp; DSL</div>
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">// docZip is of type Zip
+def docZip = tasks.create(name: 'docZip', type: Zip) {
+    archiveName = 'doc.zip'
+    from 'doc'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">// docZip is of type Zip
+val docZip by tasks.creating(Zip::class) {
+    archiveName = "doc.zip"
+    from("doc")
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -873,7 +1480,12 @@ Here&#8217;s an example that creates a new task of type <code>Zip</code>:</p>
 <div class="paragraph">
 <p>Declaring dependencies in existing configurations is similar to the way it&#8217;s done in Groovy build scripts, as you can see in this example:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'java'
@@ -888,7 +1500,12 @@ dependencies {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
     java
@@ -901,6 +1518,10 @@ dependencies {
     }
     testRuntimeOnly("com.example:test-junit-jupiter-runtime:1.3")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -927,7 +1548,12 @@ dependencies {
 <div class="paragraph">
 <p>Note that if you do not use the <code>plugins {}</code> block to apply your plugins, then you won&#8217;t be able to configure the dependency configurations provided by those plugins in the usual way. Instead, you will have to use string literals for the configuration names, which means you won&#8217;t get IDE support:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin: 'java'
 dependencies {
@@ -940,7 +1566,12 @@ dependencies {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">apply(plugin = "java")
 dependencies {
@@ -953,10 +1584,19 @@ dependencies {
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>or you can bring the configurations into scope thanks to Kotlin&#8217;s delegated properties:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin: 'java'
 dependencies {
@@ -969,7 +1609,12 @@ dependencies {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">apply(plugin = "java")
 val implementation by configurations
@@ -984,6 +1629,10 @@ dependencies {
     }
     testRuntimeOnly("com.example:test-junit-jupiter-runtime:1.3")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1005,7 +1654,12 @@ The following example declares two new configurations:</p>
 </li>
 </ul>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">configurations {
     db
@@ -1020,7 +1674,12 @@ dependencies {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">val db by configurations.creating
 val integTestImplementation by configurations.creating {
@@ -1033,11 +1692,19 @@ dependencies {
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Note that we can only use the <code>db(&#8230;&#8203;)</code> and <code>integTestImplementation(&#8230;&#8203;)</code> notation within the <code>dependencies {}</code> block in the above example because both configurations are declared as delegated properties beforehand via the <code>creating()</code> method.
 If the configurations were defined elsewhere, you could only reference them either by first creating delegating properties via <code>configurations</code>  — as opposed to <code>configurations.creating()</code> — or by using string literals within the <code>dependencies {}</code> block.
 The following example demonstrates both approaches:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
@@ -1054,30 +1721,31 @@ dependencies {
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="multi_project_builds"><a class="anchor" href="#multi_project_builds"></a><a class="link" href="#multi_project_builds">Multi-project builds</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html">model for multi-project builds</a> is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
+<p>The <a href="https://docs.gradle.org/4.10/userguide/multi_project_builds.html">model for multi-project builds</a> is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
 Multi-project builds can even have a mix of the two.</p>
 </div>
 <div class="paragraph">
 <p>As you can see from the following settings file and build script, the Kotlin syntax is very similar to the Groovy one:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
 <div class="title">settings.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">include 'core', 'cli'</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="title">settings.gradle.kts</div>
-<div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("core", "cli")</code></pre>
-</div>
-</div>
-<hr>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">subprojects {
@@ -1088,7 +1756,17 @@ project(':cli') {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
+<div class="title">settings.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("core", "cli")</code></pre>
+</div>
+</div>
+<div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">subprojects {
@@ -1097,6 +1775,10 @@ project(':cli') {
 project(":cli") {
     apply(plugin = "application")
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1112,18 +1794,30 @@ In other words, project build scripts are evaluated top to bottom according to t
 <div class="paragraph">
 <p>Following up on our example multi project build, the <code>:cli</code> build script would look as follows:</p>
 </div>
-<div class="listingblock multi-language-sample">
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
 <div class="title">cli/build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">mainClassName = "com.example.CliMain"</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
+</div>
+</div>
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
+<div class="listingblock">
 <div class="title">cli/build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">application {
     mainClassName = "com.example.CliMain"
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -1135,13 +1829,13 @@ In other words, project build scripts are evaluated top to bottom according to t
 <td class="content">
 <div class="title">Configuration on demand</div>
 <div class="paragraph">
-<p>Enabling the incubating <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard-to-diagnose problems.
+<p>Enabling the incubating <a href="https://docs.gradle.org/4.10/userguide/multi_project_builds.html#sec:configuration_on_demand">configuration on demand</a> feature is not recommended as it can lead to very hard-to-diagnose problems.
 The strictness of the Gradle Kotlin DSL makes it even more likely that problems will arise.
 In order to save you trouble, you should disable it if it&#8217;s already enabled.</p>
 </div>
 <div class="paragraph">
 <p>The same is true for <code>evaluationDependsOn(projectPath)</code> and <code>evaluationDependsOnChildren()</code>.
-Favor <a href="https://docs.gradle.org/4.10-rc-2/userguide/multi_project_builds.html#sec:decoupled_projects">decoupling your projects</a> instead.</p>
+Favor <a href="https://docs.gradle.org/4.10/userguide/multi_project_builds.html#sec:decoupled_projects">decoupling your projects</a> instead.</p>
 </div>
 </td>
 </tr>
@@ -1196,11 +1890,11 @@ You&#8217;ll find recipes on how to cross the dynamic boundaries from static Kot
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>plugins {}</code> block — <a href="https://docs.gradle.org/4.10-rc-2/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a> — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
+<p>The <code>plugins {}</code> block — <a href="https://docs.gradle.org/4.10/userguide/plugins.html#sec:plugins_block">explained in the Gradle User Manual</a> — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
 You saw <a href="#declarative-scripts">above</a> how to apply this practice even with external plugins published without the required metadata.</p>
 </div>
 <div class="paragraph">
-<p>Utilizing the <em>buildSrc</em> project — also <a href="https://docs.gradle.org/4.10-rc-2/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a> — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.</p>
+<p>Utilizing the <em>buildSrc</em> project — also <a href="https://docs.gradle.org/4.10/userguide/organizing_gradle_projects.html#sec:build_sources">explained in the Gradle User Manual</a> — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.</p>
 </div>
 <div class="sect2">
 <h3 id="kotlin_dsl_build_structure_samples"><a class="anchor" href="#kotlin_dsl_build_structure_samples"></a><a class="link" href="#kotlin_dsl_build_structure_samples">Kotlin DSL build structure samples</a></h3>
@@ -1219,7 +1913,7 @@ You saw <a href="#declarative-scripts">above</a> how to apply this practice even
 <p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/gradle-plugin">gradle-plugin</a> sample demonstrates a Gradle plugin implemented in Kotlin and taking advantage of the <code>kotlin-dsl</code> plugin.</p>
 </li>
 <li>
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.10-rc-2/userguide/composite_builds.html">Composite Builds</a>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/composite-builds">composite-builds</a> sample demonstrates how to use <a href="https://docs.gradle.org/4.10/userguide/composite_builds.html">Composite Builds</a>.</p>
 </li>
 <li>
 <p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/source-control">source-control</a> sample demonstrates how to use external <a href="https://github.com/gradle/gradle-native/issues/42">source dependencies</a>.</p>
@@ -1264,10 +1958,18 @@ In addition, the Kotlin DSL provides several ways to opt into Groovy semantics, 
 <div class="paragraph">
 <p>To call a Kotlin extension function from Groovy, call it as a static function, passing the receiver as the first parameter:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">TheTargetTypeKt.kotlinExtensionFunction(receiver, "parameters", 42, aReference)</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1277,10 +1979,18 @@ In addition, the Kotlin DSL provides several ways to opt into Groovy semantics, 
 <p>To call a Groovy extension method from Kotlin, the same approach applies: call it as a static function passing the receiver as the first parameter.
 Here&#8217;s an example:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">TheTargetTypeGroovyExtension.groovyExtensionMethod(receiver, "parameters", 42, aReference)</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1307,6 +2017,8 @@ There is no way to provide values by argument name.</p>
 <div class="paragraph">
 <p>To call a Groovy function with named arguments from Kotlin, you need to pass a <code>Map&lt;String, ?&gt;</code>, as shown in this example:</p>
 </div>
+<div class="exampleblock multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
@@ -1314,6 +2026,8 @@ There is no way to provide values by argument name.</p>
     "parameterName" to "value",
     "other" to 42,
     "and" to aReference))</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1358,7 +2072,12 @@ Gradle plugins written in any language should prefer the type <code>Action&lt;T&
 <div class="paragraph">
 <p>Some plugins expect simple closures, as with the <a href="https://plugins.gradle.org/plugin/com.jfrog.bintray">Bintray</a> plugin:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">bintray {
     pkg(closureOf&lt;PackageConfig&gt; {
@@ -1367,16 +2086,29 @@ Gradle plugins written in any language should prefer the type <code>Action&lt;T&
 }</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>In other cases, like with the <a href="https://plugins.gradle.org/plugin/org.gretty">Gretty Plugin</a> when configuring farms, the plugin expects a delegate closure:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
+<div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">farms {
     farm("OldCoreWar", delegateClosureOf&lt;FarmExtension&gt; {
         // Config for the war here
     })
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1397,6 +2129,10 @@ will resolve the problem.</p>
 <p>The Kotlin DSL provides a <code>withGroovyBuilder {}</code> utility extension that attaches the Groovy metaprogramming semantics to objects of type <code>Any</code>.
 The following example demonstrates several features of the method on the object <code>target</code>:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock testable-sample multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
@@ -1414,6 +2150,10 @@ The following example demonstrates several features of the method on the object 
         }
     "another"("name" to "example", "url" to "https://example.com/") <i class="conum" data-value="5"></i><b>(5)</b>
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="colist arabic">
@@ -1441,8 +2181,8 @@ The following example demonstrates several features of the method on the object 
 </table>
 </div>
 <div class="paragraph">
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder()</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.10-rc-2/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom POM using Gradle&#8217;s core <a href="https://docs.gradle.org/4.10-rc-2/userguide/maven_plugin.html">Maven Plugin</a>.
-Note that the recommended <a href="https://docs.gradle.org/4.10-rc-2/userguide/publishing_maven.html">Maven Publish Plugin</a> provides a type-safe and Kotlin-friendly DSL that allows you to easily do <a href="https://docs.gradle.org/4.10-rc-2/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a> without resorting to <code>withGroovyBuilder()</code>.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin">maven-plugin</a> sample demonstrates the use of the <code>withGroovyBuilder()</code> utility extensions for configuring the <code>uploadArchives</code> task to <a href="https://docs.gradle.org/4.10/userguide/maven_plugin.html#sec:deploying_to_a_maven_repository">deploy to a Maven repository</a> with a custom POM using Gradle&#8217;s core <a href="https://docs.gradle.org/4.10/userguide/maven_plugin.html">Maven Plugin</a>.
+Note that the recommended <a href="https://docs.gradle.org/4.10/userguide/publishing_maven.html">Maven Publish Plugin</a> provides a type-safe and Kotlin-friendly DSL that allows you to easily do <a href="https://docs.gradle.org/4.10/userguide/publishing_maven.html#sec:modifying_the_generated_pom">the same and more</a> without resorting to <code>withGroovyBuilder()</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1450,6 +2190,10 @@ Note that the recommended <a href="https://docs.gradle.org/4.10-rc-2/userguide/p
 <div class="paragraph">
 <p>Another option when dealing with problematic plugins that assume a Groovy DSL build script is to configure them in a Groovy DSL build script that is applied from the main Kotlin DSL build script:</p>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">build.gradle.kts</div>
 <div class="content">
@@ -1459,6 +2203,14 @@ Note that the recommended <a href="https://docs.gradle.org/4.10-rc-2/userguide/p
 apply(from = "dynamic-groovy-plugin-configuration.gradle")  <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock multi-language-sample">
+<div class="content">
 <div class="listingblock">
 <div class="title">dynamic-groovy-plugin-configuration.gradle</div>
 <div class="content">
@@ -1467,6 +2219,10 @@ apply(from = "dynamic-groovy-plugin-configuration.gradle")  <i class="conum" dat
         groovy as Usual
     }
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="colist arabic">
@@ -1501,7 +2257,7 @@ Last, but not least, you learnt how the two DSLs inter-operate.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>The <a href="https://docs.gradle.org/4.10-rc-2/userguide/userguide.html#best-practices">Gradle Best Practices</a> user manual chapters contain reference documentation on how to structure your builds.</p>
+<p>The <a href="https://docs.gradle.org/4.10/userguide/userguide.html#best-practices">Gradle Best Practices</a> user manual chapters contain reference documentation on how to structure your builds.</p>
 </li>
 <li>
 <p>The <a href="kotlin-dsl-samples"><code>kotlin-dsl</code> samples</a> contain example of various build structures using the Kotlin DSL.</p>
