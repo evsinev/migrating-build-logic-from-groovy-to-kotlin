@@ -520,7 +520,7 @@ configure&lt;CheckstyleExtension&gt; {
 This will happen both at the top level of your build scripts — most plugin extensions are added to the <code>Project</code> object — and within an extension&#8217;s configuration block.</p>
 </div>
 <div class="paragraph">
-<p>You can also run the <code>:kotlinDslAccessorsReport</code> task to learn about the extension contributed by all applied plugins.
+<p>You can also run the <code>:kotlinDslAccessorsReport</code> task to learn about the extensions contributed by all applied plugins.
 It prints the Kotlin code you can use to access those extensions and provides the name and type of the accessor methods.</p>
 </div>
 </td>
@@ -542,7 +542,7 @@ This topic is covered in the <a href="#configuring-tasks">Configuring tasks</a> 
 <div class="sectionbody">
 <div class="paragraph">
 <p>Plugins fetched from a source other than the <a href="https://plugins.gradle.org/">Gradle Plugin Portal</a> may or may not be usable with the <code>plugins {}</code> block.
-It depending on how they have been published.</p>
+It depends on how they have been published.</p>
 </div>
 <div class="paragraph">
 <p>For example, the Android Plugin for Gradle is not published to the Gradle Plugin Portal and at least up to version 3.1.0 of the plugin, the metadata required to resolve the artifacts for a given plugin identifier  is not published to the Google repository.</p>
@@ -1873,7 +1873,7 @@ A complex and highly dynamic build may require some restructuring anyway, so in 
 <p>Since applying Gradle best practices will make your builds easier to use and faster, we recommend that you migrate all projects in that way eventually, but it makes sense to focus on the projects that have to be restructured first and those that would benefit most from the improvements.</p>
 </div>
 <div class="paragraph">
-<p>Also consider that the more parts of your build logic that rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
+<p>Also consider that the more parts of your build logic rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
 You&#8217;ll find recipes on how to cross the dynamic boundaries from static Kotlin in the <a href="#interop">Interoperability</a> section below, regardless of where the dynamic Groovy build logic resides.</p>
 </div>
 <div class="paragraph">
@@ -1973,7 +1973,7 @@ In addition, the Kotlin DSL provides several ways to opt into Groovy semantics, 
 </div>
 </div>
 <div class="paragraph">
-<p>Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in see the <a href="https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#package-level-functions">Package-Level Functions</a> section of the Kotlin reference documentation.</p>
+<p>Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in the <a href="https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#package-level-functions">Package-Level Functions</a> section of the Kotlin reference documentation.</p>
 </div>
 <div class="paragraph">
 <p>To call a Groovy extension method from Kotlin, the same approach applies: call it as a static function passing the receiver as the first parameter.
@@ -2013,7 +2013,7 @@ There is no way to provide values by argument name.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="calling_kotlin_from_groovy_2"><a class="anchor" href="#calling_kotlin_from_groovy_2"></a><a class="link" href="#calling_kotlin_from_groovy_2">Calling Kotlin from Groovy</a></h4>
+<h4 id="calling_groovy_from_kotlin"><a class="anchor" href="#calling_groovy_from_kotlin"></a><a class="link" href="#calling_groovy_from_kotlin">Calling Groovy from Kotlin</a></h4>
 <div class="paragraph">
 <p>To call a Groovy function with named arguments from Kotlin, you need to pass a <code>Map&lt;String, ?&gt;</code>, as shown in this example:</p>
 </div>
@@ -2048,7 +2048,7 @@ For example, some third-party plugins written in Groovy expect closure arguments
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Gradle plugins written in any language should prefer the type <code>Action&lt;T&gt;</code> type in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
+Gradle plugins written in any language should prefer the type <code>Action&lt;T&gt;</code> in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
 </td>
 </tr>
 </table>
@@ -2260,7 +2260,7 @@ Last, but not least, you learnt how the two DSLs inter-operate.</p>
 <p>The <a href="https://docs.gradle.org/4.10/userguide/userguide.html#best-practices">Gradle Best Practices</a> user manual chapters contain reference documentation on how to structure your builds.</p>
 </li>
 <li>
-<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/"><code>kotlin-dsl</code> samples</a> contain example of various build structures using the Kotlin DSL.</p>
+<p>The <a href="https://github.com/gradle/kotlin-dsl/tree/master/samples/"><code>kotlin-dsl</code> samples</a> contain examples of various build structures using the Kotlin DSL.</p>
 </li>
 </ul>
 </div>
